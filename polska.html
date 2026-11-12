@@ -11,9 +11,14 @@
   <link rel="stylesheet" href="assets/css/styles.css">
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
   <style>
-    .overview-block { display: grid; grid-template-columns: 1fr 1.1fr; gap: 32px; align-items: start; }
-    .overview-block + .overview-block { margin-top: 48px; padding-top: 40px; border-top: 1px solid var(--line); }
-    @media (max-width: 860px) { .overview-block { grid-template-columns: 1fr; } }
+    .overview-block { display: grid; grid-template-columns: minmax(0, 1fr); gap: 22px; }
+    .overview-block + .overview-block { margin-top: 56px; padding-top: 44px; border-top: 1px solid var(--line); }
+    .ov-text { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 8px 32px; align-items: start; }
+    .ov-text .eyebrow, .ov-text h3 { grid-column: 1 / -1; }
+    .ov-charts { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+    #ryzyka .ov-charts { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    figure.chart-card { margin: 0; }
+    @media (max-width: 960px) { .ov-charts, #ryzyka .ov-charts, .ov-text { grid-template-columns: minmax(0, 1fr); } }
 
     /* Dashboard */
     .dash { background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 24px; }
@@ -28,9 +33,15 @@
     .kpis .kpi { padding: 12px 10px; }
     .kpis .k-value { font-size: 1.5rem; }
     .kpis .k-note { font-size: .78rem; color: var(--ink-3); }
+    .kpis .k-value small { font-size: .55em; color: var(--ink-3); font-weight: 500; }
+    .kpis .k-range { font-size: 1.15rem !important; padding: .35em 0; }
+    .kpis .k-arrow { font-size: .6em; margin-right: 4px; vertical-align: .18em; }
+    .k-rankbar { display: grid; grid-template-columns: repeat(16, 1fr); gap: 2px; margin: 8px 6px 2px; }
+    .k-rankbar i { height: 8px; border-radius: 2px; background: var(--sand-2); }
+    .k-rankbar i.on { background: var(--ncd); height: 12px; margin-top: -2px; }
     @media (max-width: 620px) { .kpis { grid-template-columns: repeat(2, 1fr); } }
-    .rank-bar { height: 10px; border-radius: 5px; background: var(--sand); overflow: hidden; min-width: 80px; }
-    .rank-bar i { display: block; height: 100%; border-radius: 5px; }
+    .rank-bar { height: 12px; min-width: 80px; }
+    .rank-bar i { display: block; height: 100%; border-radius: 0 4px 4px 0; transition: width .5s cubic-bezier(.2,.75,.2,1); }
     table.data tr.is-sel td { background: var(--ncd-tint); font-weight: 600; }
     table.data tr.is-pl td { background: var(--sand); font-weight: 600; }
     table.data tbody tr { cursor: pointer; }
@@ -60,7 +71,8 @@
     .op-risks { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 22px; }
     .op-risk { border-radius: 10px; padding: 10px 6px; text-align: center; font-size: .88rem; }
     .op-risk b { display: block; font-size: 1.1rem; font-weight: 500; }
-    .op-charts { display: grid; grid-template-columns: 1.3fr 1fr; gap: 20px; }
+    .op-charts { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 20px; }
+    .op-charts .viz-scale { max-width: 100%; }
     .op-charts .box { border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
     .op-charts .box h5 { margin: 0 0 6px; font-size: .85rem; color: var(--ink-2); font-weight: 600; }
     .op-foot { margin-top: 18px; font-size: .85rem; color: var(--ink-3); }
@@ -115,49 +127,71 @@
         </div>
 
         <div class="overview-block" id="zgony">
-          <div class="prose">
+          <div class="prose ov-text">
             <span class="eyebrow">3.1.1</span>
             <h3 class="mt-0">Zgony</h3>
             <p>Przegląd głównych przyczyn zgonów w Polsce: ranking, trendy od 1990, porównanie z UE/CEE. Kluczowe wykresy i tabele osadzone w tekście.</p>
             <div class="todo"><strong>Dane liczbowe, wykresy, komentarz analityczny zespołu.</strong></div>
           </div>
-          <div class="card">
-            <p class="dash-title">Standaryzowana umieralność, Polska 1990–2023</p>
-            <p class="dash-sub">na 100 tys. ludności</p>
-            <div id="ov-deaths"></div>
-            <p class="sample-note mb-0">Dane przykładowe — ilustracja koncepcji, do zastąpienia eksportem z GBD Results Tool.</p>
+          <div class="ov-charts">
+            <figure class="chart-card ov-wide">
+              <figcaption><p class="cc-title">Jak zmieniła się kolejność przyczyn zgonów?</p>
+              <p class="cc-sub">Ranking 12 głównych przyczyn zgonów, Polska 1990 → 2023 · najedź na przyczynę, aby prześledzić jej drogę</p></figcaption>
+              <div id="ov-ranks"></div>
+              <p class="sample-note">Dane przykładowe — rangi i zmiany ilustracyjne, do zastąpienia eksportem z GBD Results Tool.</p>
+            </figure>
+            <figure class="chart-card">
+              <figcaption><p class="cc-title">Umieralność: choroby krążenia vs nowotwory</p>
+              <p class="cc-sub">Standaryzowany współczynnik na 100 tys., Polska 1990–2023, z 95% UI</p></figcaption>
+              <div id="ov-deaths"></div>
+              <p class="sample-note">Dane przykładowe.</p>
+            </figure>
           </div>
         </div>
 
         <div class="overview-block" id="daly">
-          <div class="prose">
+          <div class="prose ov-text">
             <span class="eyebrow">3.1.2</span>
             <h3 class="mt-0">DALY</h3>
             <p>Przegląd obciążenia chorobami mierzonego w DALY: główne przyczyny, zmiany w czasie, struktura YLL vs YLD. Uwypuklenie roli chorób przewlekłych i zaburzeń psychicznych.</p>
             <div class="todo"><strong>Dane liczbowe, wykresy, komentarz analityczny zespołu.</strong></div>
           </div>
-          <div class="card">
-            <p class="dash-title">Struktura DALY: YLL vs YLD</p>
-            <p class="dash-sub">udział w całkowitym obciążeniu, Polska</p>
-            <div class="legend"><span><i style="background:var(--ncd)"></i>YLL — lata utracone z powodu zgonów</span><span><i style="background:var(--coral)"></i>YLD — lata z niepełnosprawnością</span></div>
-            <div id="ov-daly"></div>
-            <p class="sample-note mt-1 mb-0">Dane przykładowe — proporcje ilustracyjne.</p>
+          <div class="ov-charts">
+            <figure class="chart-card ov-wide">
+              <figcaption><p class="cc-title">Na co Polacy tracą lata zdrowego życia?</p>
+              <p class="cc-sub">DALY wg przyczyn, Polska 2023 · pole prostokąta = udział w całkowitym obciążeniu · barwy wg grup przyczyn GBD</p></figcaption>
+              <div id="ov-treemap"></div>
+              <p class="sample-note">Dane przykładowe — proporcje przybliżone.</p>
+            </figure>
+            <figure class="chart-card">
+              <figcaption><p class="cc-title">Coraz więcej lat z chorobą, nie przed czasem utraconych</p>
+              <p class="cc-sub">Struktura DALY: YLL vs YLD, Polska 1990–2023</p></figcaption>
+              <div id="ov-daly"></div>
+              <p class="sample-note">Dane przykładowe — proporcje ilustracyjne.</p>
+            </figure>
           </div>
         </div>
 
         <div class="overview-block" id="ryzyka">
-          <div class="prose">
+          <div class="prose ov-text">
             <span class="eyebrow">3.1.3</span>
             <h3 class="mt-0">Czynniki ryzyka</h3>
             <p>Przegląd kluczowych czynników ryzyka w Polsce: ranking, trendy, porównanie z regionem. Podział na czynniki behawioralne, metaboliczne i środowiskowe.</p>
             <div class="todo"><strong>Dane liczbowe, wykresy, komentarz analityczny zespołu.</strong></div>
           </div>
-          <div class="card">
-            <p class="dash-title">Czynniki ryzyka wg odsetka przypisywalnych DALY</p>
-            <p class="dash-sub">% wszystkich DALY, Polska</p>
-            <div class="legend"><span><i style="background:var(--coral)"></i>Behawioralne</span><span><i style="background:var(--purple)"></i>Metaboliczne</span><span><i style="background:#9a9483"></i>Środowiskowe</span></div>
-            <div id="ov-risks"></div>
-            <p class="sample-note mb-0">Dane przykładowe — ranking ilustracyjny.</p>
+          <div class="ov-charts">
+            <figure class="chart-card">
+              <figcaption><p class="cc-title">Dziesięć czynników ryzyka o największym obciążeniu</p>
+              <p class="cc-sub">% wszystkich DALY przypisywalnych czynnikowi, Polska 2023, z 95% UI</p></figcaption>
+              <div id="ov-risks"></div>
+              <p class="sample-note">Dane przykładowe — ranking ilustracyjny.</p>
+            </figure>
+            <figure class="chart-card">
+              <figcaption><p class="cc-title">Co się zmieniło od 1990 roku?</p>
+              <p class="cc-sub">% DALY przypisywalnych czynnikowi: 1990 → 2023</p></figcaption>
+              <div id="ov-risk-change"></div>
+              <p class="sample-note">Dane przykładowe.</p>
+            </figure>
           </div>
         </div>
       </div>
@@ -351,6 +385,7 @@
   <div data-site-footer></div>
   <script src="assets/js/data.js"></script>
   <script src="assets/js/site.js"></script>
+  <script src="assets/js/geo.js"></script>
   <script src="assets/js/charts.js"></script>
   <script src="assets/js/pages/polska.js"></script>
 </body>

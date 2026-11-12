@@ -34,6 +34,10 @@
     .panel-title { display: flex; justify-content: space-between; align-items: end; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
     .panel-title h3 { margin: 0; }
     .chip[aria-pressed="true"] { background: var(--ncd); }
+    .cee-top { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+    @media (max-width: 960px) { .cee-top { grid-template-columns: minmax(0, 1fr); } }
+    figure.chart-card { margin: 0; }
+    .chart-card .panel-title { align-items: start; }
     .teaser { display: flex; flex-direction: column; gap: 10px; }
     .teaser .badge { align-self: flex-start; }
     @media (max-width: 620px) {
@@ -154,9 +158,26 @@
           <h2>Kluczowe wskaźniki</h2>
           <p class="muted">Tabele i wykresy porównawcze: ranking krajów CEE według wybranych wskaźników GBD — mapa cieplna, ranking i trendy. Kliknij nagłówek kolumny, aby posortować.</p>
         </div>
-        <h3>Mapa cieplna wskaźników</h3>
+        <div class="cee-top">
+          <figure class="chart-card">
+            <figcaption class="panel-title">
+              <div><p class="cc-title">Mapa regionu</p><p class="cc-sub" id="map-sub">względem średniej CEE</p></div>
+              <div class="field" style="margin:0;min-width:220px"><label for="map-ind" class="sr-only">Wskaźnik na mapie</label><select id="map-ind"></select></div>
+            </figcaption>
+            <div id="eu-map"></div>
+            <p class="sample-note">Dane przykładowe. Europa Zachodnia pokazana jako jeden region GBD (punkt odniesienia).</p>
+          </figure>
+          <figure class="chart-card">
+            <figcaption><p class="cc-title">Czy luka Wschód–Zachód się zmniejsza?</p>
+            <p class="cc-sub">Oczekiwana długość życia przy urodzeniu (lata), 1990 → 2023</p></figcaption>
+            <div id="le-change"></div>
+            <p class="sample-note">Dane przykładowe — wartości 1990 ilustracyjne.</p>
+          </figure>
+        </div>
+
+        <h3 class="mt-3">Mapa cieplna wskaźników</h3>
         <div id="heatmap"></div>
-        <p class="sample-note mt-1">Dane przykładowe — ilustracja działania widżetu. Kolor: niebieski = korzystniej, czerwony = mniej korzystnie (w obrębie kolumny).</p>
+        <p class="sample-note mt-1">Dane przykładowe — ilustracja działania widżetu. Kolor pokazuje odchylenie od średniej CEE w danej kolumnie: niebieski = korzystniej, czerwony = mniej korzystnie. Kliknij nagłówek, aby posortować.</p>
 
         <div class="grid g2 mt-3" style="gap:32px;align-items:start">
           <div>
@@ -168,7 +189,7 @@
               </div>
             </div>
             <div id="ranking"></div>
-            <p class="sample-note">Dane przykładowe. Szary = Europa Zachodnia (punkt odniesienia), koral = Polska.</p>
+            <p class="sample-note">Dane przykładowe. Koral = Polska. Punkt odniesienia: Europa Zachodnia (pionowa linia lub — dla długości życia — luka w latach).</p>
           </div>
           <div>
             <div class="panel-title">
@@ -178,7 +199,8 @@
                 <select id="trend-ind"></select>
               </div>
             </div>
-            <div class="chips" id="trend-chips" role="group" aria-label="Kraje na wykresie"></div>
+            <div class="chips" id="trend-chips" role="group" aria-label="Kraje na wykresie (maks. 4)"></div>
+            <p class="small muted mb-0 mt-1" id="trend-msg" role="status">Wybierz do 4 krajów. Polska zawsze w kolorze koralowym.</p>
             <div id="trend-chart" class="mt-1"></div>
             <p class="sample-note">Trend ilustracyjny generowany na potrzeby prototypu.</p>
           </div>
@@ -193,7 +215,7 @@
         <div class="section-head">
           <span class="eyebrow">4.3</span>
           <h2>Porównywarka krajów</h2>
-          <p class="muted">Wybierz 2–3 kraje i wskaźnik, aby zobaczyć porównanie. Linia przerywana to Europa Zachodnia jako punkt odniesienia.</p>
+          <p class="muted">Wybierz 2–3 kraje i wskaźnik, aby zobaczyć porównanie. Szara linia i pionowy znacznik to Europa Zachodnia jako punkt odniesienia.</p>
         </div>
         <div class="card">
           <div class="controls">
@@ -255,6 +277,7 @@
   <div data-site-footer></div>
   <script src="assets/js/data.js"></script>
   <script src="assets/js/site.js"></script>
+  <script src="assets/js/geo.js"></script>
   <script src="assets/js/charts.js"></script>
   <script src="assets/js/pages/cee.js"></script>
 </body>

@@ -39,20 +39,36 @@ assets/js/pages/*.js    skrypty poszczególnych podstron
 
 ## Paleta barw
 
-Paleta stosuje konwencję wizualną Global Burden of Disease (IHME / publikacje GBD w The Lancet, GBD Compare):
+Paleta stosuje konwencję wizualną Global Burden of Disease (IHME / publikacje GBD w The Lancet, GBD Compare).
+Palety kategorialne sprawdzono walidatorem (separacja dla daltonizmu ΔE, kontrast, nasycenie).
 
 | Znaczenie | Kolor | Token |
 |---|---|---|
 | Grupa I: choroby zakaźne, matczyne, noworodkowe i żywieniowe | czerwony `#c0392b` | `--cmnn` |
 | Grupa II: choroby niezakaźne (NCD) | niebieski `#1f5fa6` | `--ncd` |
-| Grupa III: urazy | zielony `#13795b` | `--inj` |
-| Skale wartości (mapy, heatmapy) | rozbieżna niebieski → czerwony | `--seq-1…6` |
-| Czynniki ryzyka: behawioralne / metaboliczne / środowiskowe | koral / fiolet / ciepła szarość | `--coral`, `--purple`, `--sand` |
-| YLL / YLD / lata w zdrowiu | niebieski / koral / zielony | |
-| Wnioski, ostrzeżenia | bursztyn | `--amber` |
+| Grupa III: urazy | zielony `#0b7d57` | `--inj` |
+| Mapy, heatmapy, rankingi | skala rozbieżna 7 klas wokół punktu odniesienia (średnia PL / CEE): niebieski = korzystniej, szary = średnia, czerwony = mniej korzystnie | `--div-1…7` |
+| Czynniki ryzyka: behawioralne / metaboliczne / środowiskowe | `#d85a30` / `#6b4fc4` / `#0091b0` | `GBD.riskColors` |
+| Porównania (maks. 3–4 serie) | niebieski, koral, fiolet, zieleń; punkt odniesienia szary `#9aa1ab` | |
+| YLL / YLD | niebieski / koral | |
 
 Uwaga: w makietach z dokumentu Word grupa I była niebieska, a NCD koralowe. Na stronie odwrócono to
 zgodnie z konwencją GBD, w której NCD są niebieskie, a choroby zakaźne czerwone.
+
+## Wykresy
+
+`assets/js/charts.js` to własna biblioteka SVG bez zależności. Każdy wykres jest rysowany w rzeczywistej
+szerokości kontenera, ma tooltip (mysz i klawiatura) i rozwijany widok tabeli:
+
+- `lineChart`: trendy z 95% przedziałem niepewności (UI), oś krzyżowa, adnotacja COVID-19;
+- `hbars`: ranking z wąsami UI i linią odniesienia;
+- `polandMap` / `europeMap`: kartogramy na prawdziwych granicach;
+- `treemap`: DALY wg przyczyn w stylu GBD Compare (grupa → poziom 2 → poziom 3);
+- `arrowDiagram`: zmiana rang przyczyn 1990 → 2023 (diagram strzałkowy GBD);
+- `stackedShare`: udziały w czasie (YLL vs YLD); `dumbbell`: zmiana A → B; `sparkline`; `heatmap`.
+
+Granice w `assets/js/geo.js` generuje `tools/build-geo.mjs` (instrukcja w nagłówku pliku). Województwa
+pochodzą z PRG/GUGiK (przez ppatrzyk/polska-geojson), kraje z Natural Earth (domena publiczna).
 
 ## Podgląd lokalny
 

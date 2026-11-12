@@ -14,8 +14,8 @@
     /* Garbage codes — słupki */
     .gc-bars { display: grid; grid-template-columns: 190px 1fr; gap: 10px 14px; align-items: center; margin: 18px 0 14px; }
     .gc-bars .lbl { text-align: right; font-size: .95rem; }
-    .gc-track { height: 36px; border-radius: 8px; background: rgba(255,255,255,.55); overflow: hidden; display: flex; gap: 4px; }
-    .gc-track > div { height: 100%; border-radius: 7px; display: flex; align-items: center; padding: 0 12px; color: #fff; font-size: .9rem; white-space: nowrap; overflow: hidden; }
+    .gc-track { height: 28px; display: flex; gap: 2px; }
+    .gc-track > div { height: 100%; border-radius: 4px; display: flex; align-items: center; padding: 0 9px; color: #fff; font-size: .84rem; font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
     .gc-track .raw { background: var(--ncd-mid); color: var(--ncd-dark); }
     .gc-track .redis { background: var(--ncd); }
     .gc-head { font-size: .85rem; display: flex; gap: 14px; }
@@ -130,11 +130,11 @@
             <div></div>
             <div class="gc-head"><span><i style="background:var(--ncd-mid)"></i>Przed korektą GBD (surowe)</span><span><i style="background:var(--ncd)"></i>Po korekcie GBD (+ redystrybucja)</span></div>
             <div class="lbl">Ch. niedokrwienna serca</div>
-            <div class="gc-track"><div class="raw" style="width:53%">surowe</div><div class="redis" style="width:26.5%">+redystr.</div></div>
+            <div class="gc-track"><div class="raw" style="width:53%">surowe</div><div class="redis" style="width:26.5%" title="+50% zgonów z redystrybucji">+50%</div></div>
             <div class="lbl">Nowotwory (łącznie)</div>
-            <div class="gc-track"><div class="raw" style="width:47.6%">surowe</div><div class="redis" style="width:15.9%">+redystr.</div></div>
+            <div class="gc-track"><div class="raw" style="width:47.6%">surowe</div><div class="redis" style="width:15.9%" title="+33% zgonów z redystrybucji">+33%</div></div>
             <div class="lbl">Udar mózgu</div>
-            <div class="gc-track"><div class="raw" style="width:31.7%">surowe</div><div class="redis" style="width:10.6%">+redystr.</div></div>
+            <div class="gc-track"><div class="raw" style="width:31.7%">surowe</div><div class="redis" style="width:10.6%" title="+33% zgonów z redystrybucji">+33%</div></div>
           </div>
         </div>
 

@@ -8,8 +8,9 @@
   const { fmt, esc } = C;
   const KEYS = ["cvd", "cancer", "daly", "le", "tob", "alc"];
   const DEC = k => (k === "le" || k === "tob" || k === "alc") ? 1 : 0;
-  const CMP_COLORS = ["#1f5fa6", "#d85a30", "#534ab7"];
-  const PL_COLOR = "#9aa1ab";
+  /* paleta porównań — zwalidowana (kolejność stała, kolor idzie za województwem) */
+  const CMP_COLORS = ["#1f5fa6", "#d85a30", "#6b4fc4"];
+  const PL_COLOR = C.REF;
 
   /* ---------- Model wartości (ilustracyjny) ---------- */
   const trendCache = {};
@@ -55,33 +56,28 @@
 
   /* ---------- 3.1 Przegląd ---------- */
   function overview() {
+    C.arrowDiagram(document.getElementById("ov-ranks"), D.polandDeathRanks, { label: "Ranking przyczyn zgonów w Polsce, 1990 i 2023" });
+
     C.lineChart(document.getElementById("ov-deaths"), [
-      { name: "Ch. układu krążenia", color: "#1f5fa6", data: series(D.poland, "cvd") },
-      { name: "Nowotwory", color: "#5a98d8", data: series(D.poland, "cancer") }
-    ], { label: "Umieralność z powodu chorób układu krążenia i nowotworów, Polska 1990–2023", height: 260, yMin: 0 });
+      { name: "Ch. układu krążenia", color: C.GROUP.ncd.base, data: series(D.poland, "cvd") },
+      { name: "Nowotwory", color: "#6b4fc4", data: series(D.poland, "cancer") }
+    ], { label: "Umieralność z powodu chorób układu krążenia i nowotworów, Polska 1990–2023", height: 300, unit: "na 100 tys. (stand.)" });
 
-    const stacks = [
-      { label: "1990", yll: 63, yld: 37 },
-      { label: "2005", yll: 56, yld: 44 },
-      { label: "2023", yll: 49, yld: 51 }
-    ];
-    document.getElementById("ov-daly").innerHTML = stacks.map(s => `
-      <div style="display:grid;grid-template-columns:48px 1fr;gap:10px;align-items:center;margin-bottom:10px">
-        <b style="font-variant-numeric:tabular-nums">${s.label}</b>
-        <div class="stack"><div style="flex:${s.yll};background:var(--ncd)">YLL ${s.yll}%</div><div style="flex:${s.yld};background:var(--coral)">YLD ${s.yld}%</div></div>
-      </div>`).join("");
+    C.treemap(document.getElementById("ov-treemap"), D.polandDalyCauses, { label: "DALY wg przyczyn, Polska 2023", ratio: 0.6 });
+    C.stackedShare(document.getElementById("ov-daly"), D.polandYllYld, { label: "Struktura DALY: YLL vs YLD, Polska 1990–2023", height: 260 });
 
-    const beh = "#d85a30", met = "#534ab7", env = "#9a9483";
-    C.hbars(document.getElementById("ov-risks"), [
-      { label: "Palenie tytoniu", value: D.poland.tob, color: beh },
-      { label: "Wysokie ciśnienie", value: 11.8, color: met },
-      { label: "Ryzyko dietetyczne", value: 10.4, color: beh },
-      { label: "Wysoki BMI", value: 9.6, color: met },
-      { label: "Wysoka glikemia", value: 8.1, color: met },
-      { label: "Alkohol", value: D.poland.alc, color: beh },
-      { label: "Wysoki LDL", value: 5.5, color: met },
-      { label: "Zanieczyszczenie PM2.5", value: 4.2, color: env }
-    ], { decimals: 1 });
+    const RC = D.riskColors;
+    C.hbars(document.getElementById("ov-risks"), D.polandRisks.map(r => ({ label: r.name, value: r.value, lower: r.lower, upper: r.upper, color: RC[r.cat] })),
+      { decimals: 1, unit: "% DALY", valueLabel: "% DALY", label: "Czynniki ryzyka wg odsetka przypisywalnych DALY", labelHeader: "Czynnik ryzyka" });
+    const legend = document.createElement("div");
+    legend.className = "viz-legend";
+    legend.innerHTML = Object.keys(RC).map(k => `<span><i class="lk box" style="background:${RC[k]}"></i>${esc(D.riskNames[k])}</span>`).join("");
+    document.getElementById("ov-risks").prepend(legend);
+
+    const R1990 = { "Palenie tytoniu": 20.5, "Wysokie ciśnienie skurczowe": 16.2, "Ryzyko dietetyczne": 13.1, "Wysoki BMI": 7.4, "Wysoka glikemia na czczo": 6.0, "Spożycie alkoholu": 6.8, "Wysoki cholesterol LDL": 8.0, "Zanieczyszczenie powietrza PM2.5": 7.9, "Niska aktywność fizyczna": 2.4, "Ryzyka zawodowe": 2.6 };
+    C.dumbbell(document.getElementById("ov-risk-change"),
+      D.polandRisks.map(r => ({ label: r.name, a: R1990[r.name], b: r.value })).sort((x, y) => y.b - x.b),
+      { aLabel: "1990", bLabel: "2023", unit: "% DALY", label: "Zmiana udziału czynników ryzyka 1990–2023" });
   }
 
   /* ---------- 3.2 Dashboard ---------- */
@@ -126,7 +122,8 @@
 
     document.getElementById("d-map-title").textContent = D.indicators[key].label + ", " + year;
     document.getElementById("d-map-sub").textContent = unit + " · " + sexLbl + " · " + ageLbl;
-    C.tileMap(document.getElementById("d-map"), ents, key, { decimals: dec, selected: st.level === "pl" ? [] : [st.level], onClick: selectLevel });
+    const rankOf = e => { const r = [...ents].sort((a, b) => D.indicators[key].higherWorse ? a[key] - b[key] : b[key] - a[key]); return `Pozycja ${r.findIndex(x => x.id === e.id) + 1} z 16 (1 = najkorzystniej)`; };
+    C.polandMap(document.getElementById("d-map"), ents, key, { decimals: dec, mid: plVal, unit, selected: st.level === "pl" ? [] : [st.level], onClick: selectLevel, rank: rankOf, label: D.indicators[key].label + ", " + year });
 
     // KPI
     const cur = st.level === "pl" ? null : ents.find(e => e.id === st.level);
@@ -136,26 +133,30 @@
     const chg = (curVal - v1990) / v1990 * 100;
     const vals = ents.map(e => e[key]);
     const k3 = cur
-      ? `<div class="kpi"><div class="k-label">Pozycja</div><div class="k-value">${ranked.findIndex(e => e.id === cur.id) + 1}/16</div><div class="k-note">1 = najkorzystniej</div></div>`
-      : `<div class="kpi"><div class="k-label">Rozpiętość</div><div class="k-value" style="font-size:1.15rem;padding:.3em 0">${fmt(Math.min(...vals), dec)}–${fmt(Math.max(...vals), dec)}</div><div class="k-note">między województwami</div></div>`;
+      ? `<div class="kpi"><div class="k-label">Pozycja</div><div class="k-value">${ranked.findIndex(e => e.id === cur.id) + 1}<small>/16</small></div><div class="k-rankbar">${ranked.map(e => `<i class="${e.id === cur.id ? "on" : ""}"></i>`).join("")}</div><div class="k-note">1 = najkorzystniej</div></div>`
+      : `<div class="kpi"><div class="k-label">Rozpiętość</div><div class="k-value k-range">${fmt(Math.min(...vals), dec)}–${fmt(Math.max(...vals), dec)}</div><div class="k-note">między województwami (${fmt((Math.max(...vals) - Math.min(...vals)) / Math.min(...vals) * 100, 0)}%)</div></div>`;
     const diff = cur ? (curVal - plVal) / plVal * 100 : null;
+    const spark = (ent, color) => C.sparkline(seriesAdj(ent, key, sex, age), { color, width: 104, height: 26, highlightIndex: year - 1990 });
+    const chgCol = better(key, curVal, v1990) ? "var(--ncd)" : "var(--cmnn)";
     document.getElementById("d-kpis").innerHTML = `
-      <div class="kpi"><div class="k-label">${esc(cur ? cur.name : "Polska")}</div><div class="k-value" style="color:var(--ncd)">${fmt(curVal, dec)}</div><div class="k-note">${year}</div></div>
-      <div class="kpi"><div class="k-label">Polska</div><div class="k-value">${fmt(plVal, dec)}</div><div class="k-note">${cur ? (diff >= 0 ? "+" : "") + fmt(diff, 1) + "% różnicy" : "średnia krajowa"}</div></div>
+      <div class="kpi"><div class="k-label">${esc(cur ? cur.name : "Polska")}</div><div class="k-value">${fmt(curVal, dec)}</div>${spark(cur || D.poland, C.GROUP.ncd.base)}<div class="k-note">${year}${cur ? "" : " · średnia krajowa"}</div></div>
+      ${cur
+        ? `<div class="kpi"><div class="k-label">Polska</div><div class="k-value">${fmt(plVal, dec)}</div>${spark(D.poland, C.REF)}<div class="k-note">${C.signed(diff)}% różnicy</div></div>`
+        : `<div class="kpi"><div class="k-label">Najkorzystniej</div><div class="k-value">${fmt(ranked[0][key], dec)}</div>${spark(ranked[0], C.GROUP.ncd.base)}<div class="k-note">${esc(ranked[0].name)}</div></div>`}
       ${k3}
-      <div class="kpi"><div class="k-label">Zmiana od 1990</div><div class="k-value" style="color:${better(key, curVal, v1990) ? "var(--ncd)" : "var(--cmnn)"}">${chg >= 0 ? "+" : ""}${fmt(chg, 0)}%</div><div class="k-note">1990 → ${year}</div></div>`;
+      <div class="kpi"><div class="k-label">Zmiana od 1990</div><div class="k-value"><span class="k-arrow" style="color:${chgCol}">${chg < 0 ? "▼" : "▲"}</span>${C.signed(chg, 0)}%</div><div class="k-note">1990 → ${year} · ${better(key, curVal, v1990) ? "poprawa" : "pogorszenie"}</div></div>`;
 
     // trend (nie przerysowujemy przy przesuwaniu suwaka roku)
     if (!fromSlider) {
-      const s = [{ name: "Polska", color: cur ? PL_COLOR : "#1f5fa6", data: seriesAdj(D.poland, key, sex, age), dash: !!cur }];
-      if (cur) s.push({ name: cur.name, color: "#1f5fa6", data: seriesAdj(cur, key, sex, age) });
+      const s = [{ name: "Polska", color: C.GROUP.ncd.base, ref: !!cur, data: seriesAdj(D.poland, key, sex, age) }];
+      if (cur) s.push({ name: cur.name, color: C.GROUP.ncd.base, data: seriesAdj(cur, key, sex, age) });
       document.getElementById("d-trend-title").textContent = "Trend 1990–2023: " + (cur ? cur.name + " na tle Polski" : "Polska ogółem");
       document.getElementById("d-trend-sub").textContent = D.indicators[key].label + " · " + unit;
-      C.lineChart(document.getElementById("d-trend"), s, { label: "Trend wskaźnika", height: 280, decimals: dec });
+      C.lineChart(document.getElementById("d-trend"), s, { label: "Trend wskaźnika", height: 290, decimals: dec, unit });
     }
 
     // ranking
-    const col = C.colorScale(vals, D.indicators[key].higherWorse);
+    const col = C.divergingScale(vals, plVal, D.indicators[key].higherWorse).color;
     const max = Math.max(...vals, plVal);
     const all = [...ranked];
     // wstaw wiersz Polski w odpowiednie miejsce rankingu
@@ -211,12 +212,12 @@
       b.style.background = i >= 0 ? CMP_COLORS[i] : "";
     });
     document.getElementById("c-unit").textContent = D.indicators[key].label + " · " + D.indicators[key].unit;
-    const rows = cmp.sel.map((id, i) => ({ label: byId(id).name, value: byId(id)[key], color: CMP_COLORS[i] }));
-    rows.push({ label: "Polska (średnia)", value: D.poland[key], color: PL_COLOR, bold: true });
-    C.hbars(document.getElementById("c-bars"), rows, { decimals: dec, max: key === "le" ? Math.max(...rows.map(r => r.value)) * 1.02 : undefined });
+    const last = ent => series(ent, key)[series(ent, key).length - 1];
+    const rows = cmp.sel.map((id, i) => ({ label: byId(id).name, value: byId(id)[key], lower: last(byId(id)).lower, upper: last(byId(id)).upper, color: CMP_COLORS[i] }));
+    C.hbars(document.getElementById("c-bars"), rows, { decimals: dec, unit: D.indicators[key].unit, ref: { value: D.poland[key], label: "Polska " + fmt(D.poland[key], dec) }, label: "Porównanie województw", labelHeader: "Województwo" });
     const s = cmp.sel.map((id, i) => ({ name: byId(id).name, color: CMP_COLORS[i], data: series(byId(id), key) }));
-    s.push({ name: "Polska", color: PL_COLOR, data: series(D.poland, key), dash: true });
-    C.lineChart(document.getElementById("c-trend"), s, { label: "Porównanie trendów", height: 280, decimals: dec });
+    s.push({ name: "Polska", ref: true, data: series(D.poland, key) });
+    C.lineChart(document.getElementById("c-trend"), s, { label: "Porównanie trendów", height: 300, decimals: dec, band: false, unit: D.indicators[key].unit });
   }
 
   /* ---------- 3.4 Profile wojewódzkie ---------- */
@@ -274,10 +275,10 @@
         <div class="bar"><span>GBD Research Hub | [instytucja]</span><span>gbd-hub.pl | [email]</span></div>
       </div>`;
     C.lineChart(document.getElementById("op-trend"), [
-      { name: "Polska", color: PL_COLOR, data: series(pl, "daly"), dash: true },
-      { name: v.name, color: "#d85a30", data: series(v, "daly") }
-    ], { label: "Trend DALY", height: 230, width: 560 });
-    C.tileMap(document.getElementById("op-map"), D.voiv, "daly", { selected: [id] });
+      { name: "Polska", ref: true, data: series(pl, "daly") },
+      { name: v.name, color: C.GROUP.ncd.base, data: series(v, "daly") }
+    ], { label: "Trend DALY", height: 240, table: false, unit: "DALY na 100 tys." });
+    C.polandMap(document.getElementById("op-map"), D.voiv, "daly", { selected: [id], names: false, table: false, label: "DALY na 100 tys. — województwa" });
   }
   function profileInit() {
     const host = document.getElementById("p-list");

@@ -233,16 +233,114 @@ GBD.trend = function (entity, key) {
   const end = entity[key];
   if (end == null) return [];
   const ind = GBD.indicators[key];
-  const seed = (entity.id || "x").split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-  const drop = key === "le" ? -(6 + (seed % 5) * 0.6) : (key === "tob" || key === "alc" ? 0.35 : 0.55 + (seed % 7) * 0.04);
+  const seed = (entity.id || "x").split("").reduce((a, c) => a + c.charCodeAt(0), 0) + key.length * 7;
+  const base = { cvd: 0.78, cancer: 0.22, daly: 0.42, death: 0.5, tob: 0.38, alc: 0.12 }[key] || 0.5;
+  const drop = key === "le" ? -(6 + (seed % 5) * 0.6) : base + (seed % 7) * 0.035;
   const out = [];
   for (let y = 1990; y <= 2023; y++) {
     const t = (2023 - y) / 33;              // 1 w 1990, 0 w 2023
-    const wiggle = Math.sin((y + seed) * 0.7) * 0.012;
+    const wiggle = Math.sin((y + seed) * 0.7) * 0.012 + Math.sin((y + seed) * 0.23) * 0.01;
     let v;
     if (key === "le") v = end + drop * t + wiggle * 4 - (y >= 2020 && y <= 2021 ? 1.4 : 0);
     else v = end * (1 + drop * Math.pow(t, 1.15) + wiggle) * (y >= 2020 && y <= 2021 && key !== "tob" && key !== "alc" ? 1.06 : 1);
-    out.push({ year: y, value: Math.round(v * 10) / 10 });
+    /* 95% przedział niepewności (UI) — szerszy dla wcześniejszych lat i dla wskaźników przypisywalnych */
+    const rel = key === "le" ? null : (key === "tob" || key === "alc" ? 0.16 + 0.06 * t : 0.045 + 0.05 * t);
+    const half = key === "le" ? 0.35 + 0.45 * t : v * rel;
+    const r1 = x => Math.round(x * 10) / 10;
+    out.push({ year: y, value: r1(v), lower: r1(v - half * (key === "le" ? 1 : 0.92)), upper: r1(v + half) });
   }
+  if (out.length) { out[out.length - 1].value = end; }
   return out;
 };
+
+/* ---------------- Polska: DALY wg przyczyn, 2023 (DANE PRZYKŁADOWE) ----------------
+   Struktura: grupa GBD (poziom 1) → parent (poziom 2) → przyczyna (poziom 3).
+   Wartości: DALY na 100 tys., standaryzowane — proporcje przybliżone, do zastąpienia. */
+GBD.polandDalyCauses = [
+  { name: "Choroba niedokrwienna serca", parent: "Choroby układu krążenia", group: "ncd", value: 3550 },
+  { name: "Udar mózgu", parent: "Choroby układu krążenia", group: "ncd", value: 1480 },
+  { name: "Nadciśnieniowa choroba serca", parent: "Choroby układu krążenia", group: "ncd", value: 520 },
+  { name: "Inne choroby krążenia", parent: "Choroby układu krążenia", group: "ncd", value: 640 },
+  { name: "Rak płuca", parent: "Nowotwory", group: "ncd", value: 1290 },
+  { name: "Rak jelita grubego", parent: "Nowotwory", group: "ncd", value: 640 },
+  { name: "Rak piersi", parent: "Nowotwory", group: "ncd", value: 380 },
+  { name: "Rak trzustki", parent: "Nowotwory", group: "ncd", value: 300 },
+  { name: "Inne nowotwory", parent: "Nowotwory", group: "ncd", value: 1650 },
+  { name: "Ból dolnego odcinka kręgosłupa", parent: "Układ mięśniowo-szkieletowy", group: "ncd", value: 1100 },
+  { name: "Inne mięśniowo-szkieletowe", parent: "Układ mięśniowo-szkieletowy", group: "ncd", value: 760 },
+  { name: "Cukrzyca typu 2", parent: "Cukrzyca i choroby nerek", group: "ncd", value: 980 },
+  { name: "Przewlekła choroba nerek", parent: "Cukrzyca i choroby nerek", group: "ncd", value: 430 },
+  { name: "Zaburzenia depresyjne", parent: "Zaburzenia psychiczne", group: "ncd", value: 650 },
+  { name: "Zaburzenia lękowe", parent: "Zaburzenia psychiczne", group: "ncd", value: 540 },
+  { name: "Inne psychiczne", parent: "Zaburzenia psychiczne", group: "ncd", value: 300 },
+  { name: "Bóle głowy", parent: "Zaburzenia neurologiczne", group: "ncd", value: 610 },
+  { name: "Alzheimer i otępienia", parent: "Zaburzenia neurologiczne", group: "ncd", value: 560 },
+  { name: "Inne neurologiczne", parent: "Zaburzenia neurologiczne", group: "ncd", value: 260 },
+  { name: "POChP", parent: "Przewlekłe ch. układu oddechowego", group: "ncd", value: 760 },
+  { name: "Astma", parent: "Przewlekłe ch. układu oddechowego", group: "ncd", value: 170 },
+  { name: "Marskość wątroby", parent: "Choroby układu pokarmowego", group: "ncd", value: 500 },
+  { name: "Inne pokarmowe", parent: "Choroby układu pokarmowego", group: "ncd", value: 280 },
+  { name: "Zaburzenia związane z alkoholem", parent: "Używanie substancji", group: "ncd", value: 450 },
+  { name: "Utrata słuchu", parent: "Narządy zmysłów", group: "ncd", value: 340 },
+  { name: "Wady wzroku", parent: "Narządy zmysłów", group: "ncd", value: 180 },
+  { name: "Choroby skóry", parent: "Choroby skóry", group: "ncd", value: 330 },
+  { name: "Inne niezakaźne", parent: "Inne niezakaźne", group: "ncd", value: 720 },
+  { name: "Upadki", parent: "Urazy niezamierzone", group: "inj", value: 610 },
+  { name: "Inne urazy niezamierzone", parent: "Urazy niezamierzone", group: "inj", value: 330 },
+  { name: "Samookaleczenia", parent: "Samookaleczenia i przemoc", group: "inj", value: 500 },
+  { name: "Przemoc", parent: "Samookaleczenia i przemoc", group: "inj", value: 60 },
+  { name: "Wypadki drogowe", parent: "Urazy komunikacyjne", group: "inj", value: 380 },
+  { name: "Zakażenia dolnych dróg oddechowych", parent: "Zakażenia oddechowe i gruźlica", group: "cmnn", value: 430 },
+  { name: "COVID-19", parent: "Zakażenia oddechowe i gruźlica", group: "cmnn", value: 260 },
+  { name: "Zaburzenia noworodkowe", parent: "Zaburzenia matczyne i noworodkowe", group: "cmnn", value: 300 },
+  { name: "Inne zakaźne", parent: "Inne choroby zakaźne", group: "cmnn", value: 290 },
+  { name: "Niedobory żywieniowe", parent: "Niedobory żywieniowe", group: "cmnn", value: 120 }
+];
+
+/* ---------------- Polska: ranking przyczyn zgonów 1990 → 2023 (DANE PRZYKŁADOWE) ---------------- */
+GBD.polandDeathRanks = {
+  from: "1990", to: "2023",
+  items: [
+    { name: "Choroba niedokrwienna serca", group: "ncd", r1: 1, r2: 1, change: -58 },
+    { name: "Udar mózgu", group: "ncd", r1: 2, r2: 2, change: -62 },
+    { name: "Rak płuca", group: "ncd", r1: 3, r2: 3, change: -35 },
+    { name: "POChP", group: "ncd", r1: 4, r2: 8, change: -55 },
+    { name: "Nadciśnieniowa choroba serca", group: "ncd", r1: 5, r2: 4, change: -12 },
+    { name: "Zakażenia dolnych dróg oddechowych", group: "cmnn", r1: 6, r2: 7, change: -38 },
+    { name: "Wypadki drogowe", group: "inj", r1: 7, r2: 12, change: -71 },
+    { name: "Rak jelita grubego", group: "ncd", r1: 8, r2: 6, change: -9 },
+    { name: "Marskość wątroby", group: "ncd", r1: 9, r2: 10, change: -27 },
+    { name: "Cukrzyca typu 2", group: "ncd", r1: 10, r2: 9, change: -18 },
+    { name: "Samookaleczenia", group: "inj", r1: 11, r2: 11, change: -41 },
+    { name: "Alzheimer i otępienia", group: "ncd", r1: 12, r2: 5, change: 6 }
+  ]
+};
+
+/* ---------------- Polska: struktura DALY — YLL vs YLD (DANE PRZYKŁADOWE) ---------------- */
+GBD.polandYllYld = (function () {
+  const years = [], yll = [], yld = [];
+  for (let y = 1990; y <= 2023; y++) {
+    const t = (y - 1990) / 33;
+    let s = 63 - 14 * Math.pow(t, 0.9) + Math.sin(y * 0.9) * 0.35;
+    if (y === 2020 || y === 2021) s += 2.2;
+    years.push(y); yll.push(Math.round(s * 10) / 10); yld.push(Math.round((100 - s) * 10) / 10);
+  }
+  return { years, series: [{ name: "YLL — lata utracone", color: "#1f5fa6", values: yll }, { name: "YLD — lata z niepełnosprawnością", color: "#d85a30", values: yld }] };
+})();
+
+/* ---------------- Polska: czynniki ryzyka — % DALY (DANE PRZYKŁADOWE) ---------------- */
+GBD.polandRisks = [
+  { name: "Palenie tytoniu", cat: "beh", value: 15.3, lower: 13.6, upper: 17.1 },
+  { name: "Wysokie ciśnienie skurczowe", cat: "met", value: 11.8, lower: 9.9, upper: 13.6 },
+  { name: "Ryzyko dietetyczne", cat: "beh", value: 10.4, lower: 7.6, upper: 13.5 },
+  { name: "Wysoki BMI", cat: "met", value: 9.6, lower: 6.8, upper: 12.6 },
+  { name: "Wysoka glikemia na czczo", cat: "met", value: 8.1, lower: 6.7, upper: 9.8 },
+  { name: "Spożycie alkoholu", cat: "beh", value: 6.0, lower: 4.9, upper: 7.2 },
+  { name: "Wysoki cholesterol LDL", cat: "met", value: 5.5, lower: 4.1, upper: 7.0 },
+  { name: "Zanieczyszczenie powietrza PM2.5", cat: "env", value: 4.2, lower: 3.1, upper: 5.4 },
+  { name: "Niska aktywność fizyczna", cat: "beh", value: 2.1, lower: 1.1, upper: 3.3 },
+  { name: "Ryzyka zawodowe", cat: "env", value: 1.9, lower: 1.4, upper: 2.5 }
+];
+/* kolory kategorii ryzyka — zwalidowane (CVD ΔE, kontrast) */
+GBD.riskColors = { beh: "#d85a30", met: "#6b4fc4", env: "#0091b0" };
+GBD.riskNames = { beh: "Behawioralne", met: "Metaboliczne", env: "Środowiskowe i zawodowe" };

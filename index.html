@@ -27,35 +27,10 @@
             <a class="btn btn-ghost" href="o-nas.html#czym-jest-gbd">Czym jest GBD?</a>
           </div>
         </div>
-        <figure class="hero-viz" aria-label="Ilustracyjna struktura obciążenia chorobami (DALY) w Polsce według trzech grup przyczyn GBD">
-          <svg viewBox="0 0 400 400" role="img">
-            <title>Struktura DALY w Polsce według grup przyczyn GBD (ilustracja)</title>
-            <!-- Grupa II: NCD (niebieski) -->
-            <rect x="0" y="0" width="400" height="330" rx="14" fill="#1f5fa6"/>
-            <rect x="8" y="8" width="190" height="180" rx="9" fill="#2b6fbb"/>
-            <rect x="206" y="8" width="186" height="120" rx="9" fill="#2b6fbb"/>
-            <rect x="206" y="136" width="90" height="52" rx="8" fill="#3a7dc6"/>
-            <rect x="304" y="136" width="88" height="52" rx="8" fill="#3a7dc6"/>
-            <rect x="8" y="196" width="120" height="126" rx="9" fill="#3a7dc6"/>
-            <rect x="136" y="196" width="120" height="126" rx="9" fill="#4a8bd0"/>
-            <rect x="264" y="196" width="128" height="60" rx="8" fill="#4a8bd0"/>
-            <rect x="264" y="264" width="128" height="58" rx="8" fill="#5a98d8"/>
-            <text x="20" y="36" fill="#fff" font-size="15" font-weight="600" font-family="Source Sans 3, sans-serif">Choroby układu krążenia</text>
-            <text x="218" y="36" fill="#fff" font-size="15" font-weight="600" font-family="Source Sans 3, sans-serif">Nowotwory</text>
-            <text x="20" y="222" fill="#fff" font-size="13" font-family="Source Sans 3, sans-serif">Mięśniowo-</text>
-            <text x="20" y="238" fill="#fff" font-size="13" font-family="Source Sans 3, sans-serif">szkieletowe</text>
-            <text x="148" y="222" fill="#fff" font-size="13" font-family="Source Sans 3, sans-serif">Psychiczne</text>
-            <text x="276" y="222" fill="#fff" font-size="13" font-family="Source Sans 3, sans-serif">Neurologiczne</text>
-            <text x="276" y="290" fill="#fff" font-size="13" font-family="Source Sans 3, sans-serif">Cukrzyca i nerki</text>
-            <!-- Grupa III: urazy (zielony) -->
-            <rect x="0" y="338" width="232" height="62" rx="12" fill="#13795b"/>
-            <text x="14" y="374" fill="#fff" font-size="14" font-weight="600" font-family="Source Sans 3, sans-serif">Urazy</text>
-            <!-- Grupa I: CMNN (czerwony) -->
-            <rect x="240" y="338" width="160" height="62" rx="12" fill="#c0392b"/>
-            <text x="252" y="366" fill="#fff" font-size="13" font-weight="600" font-family="Source Sans 3, sans-serif">Zakaźne, matczyne,</text>
-            <text x="252" y="382" fill="#fff" font-size="13" font-weight="600" font-family="Source Sans 3, sans-serif">noworodkowe, żyw.</text>
-          </svg>
-          <figcaption class="sample-note mt-1">Struktura DALY w Polsce w barwach grup przyczyn GBD — ilustracja, proporcje przybliżone.</figcaption>
+        <figure class="hero-viz">
+          <figcaption class="hero-viz-cap"><b>Na co Polacy tracą lata zdrowego życia?</b><span>DALY wg przyczyn, Polska 2023 — najedź na pole</span></figcaption>
+          <div id="hero-treemap"></div>
+          <p class="sample-note mt-1 mb-0">Barwy wg grup przyczyn GBD. Dane przykładowe — proporcje przybliżone.</p>
         </figure>
       </div>
     </section>
@@ -146,5 +121,11 @@
   <div data-site-footer></div>
   <script src="assets/js/data.js"></script>
   <script src="assets/js/site.js"></script>
+  <script src="assets/js/charts.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      GBDCharts.treemap(document.getElementById("hero-treemap"), GBD.polandDalyCauses, { label: "DALY wg przyczyn, Polska 2023", ratio: 0.82, table: false });
+    });
+  </script>
 </body>
 </html>

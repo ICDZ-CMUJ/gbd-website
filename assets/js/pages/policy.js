@@ -14,11 +14,12 @@
       { label: "Łódzkie", value: 300 },
       { label: "Lubelskie", value: 320 }
     ];
-    const scale = C.colorScale(rows.filter(r => !r.avg).map(r => r.value), true);
+    /* kolor = odchylenie od średniej krajowej (niebieski korzystniej, czerwony mniej korzystnie) */
+    const scale = C.divergingScale(rows.filter(r => !r.avg).map(r => r.value), 250, true);
     C.hbars(document.getElementById("cvd-bars"), rows.map(r => ({
-      label: r.label, value: r.value, bold: r.avg,
-      color: r.avg ? "#9aa1ab" : scale(r.value)
-    })), { max: 340 });
+      label: r.label, value: r.value, bold: r.avg, ref: r.avg,
+      color: r.avg ? C.REF : scale.color(r.value)
+    })), { decimals: 0, unit: "na 100 tys. (stand.)", ref: { value: 250, label: "Polska 250" }, label: "Umieralność z powodu chorób układu krążenia wg województw", labelHeader: "Województwo" });
 
     /* Drukowanie wyłącznie szablonu briefu */
     const btn = document.getElementById("print-brief");
