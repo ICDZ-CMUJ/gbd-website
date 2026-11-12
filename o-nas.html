@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>O nas — GBD Research Hub</title>
+  <meta name="description" content="GBD Research Hub — kim jesteśmy, czym jest Global Burden of Disease Study, zespół i partnerzy.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <style>
+    /* --- Diagram przepływu: źródło → Hub → odbiorcy → efekty --- */
+    .flow { max-width: 980px; margin: 0 auto; }
+    .flow-label { text-align: center; color: var(--ink-2); font-size: .95rem; margin: 0 0 8px; }
+    .flow-node { border-radius: var(--radius); border: 1px solid; text-align: center; padding: 16px 18px; }
+    .flow-node h4 { margin: 0 0 2px; font-weight: 500; font-size: 1.15rem; }
+    .flow-node p { margin: 0; font-size: .95rem; }
+    .flow-src { max-width: 560px; margin: 0 auto; background: var(--ncd-tint); border-color: #5f95cf; color: var(--ncd-dark); }
+    .flow-src p { color: var(--ncd); }
+    .flow-conn { display: flex; align-items: center; justify-content: center; gap: 14px; height: 64px; position: relative; }
+    .flow-conn::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 6px; width: 1.5px; background: var(--ncd); }
+    .flow-conn::after { content: ""; position: absolute; left: calc(50% - 4px); bottom: 2px; border: 4px solid transparent; border-top: 6px solid var(--ncd); }
+    .flow-conn span { position: absolute; left: calc(50% + 14px); top: 50%; transform: translateY(-60%); color: var(--ink-2); font-size: .95rem; white-space: nowrap; }
+    .flow-hub { background: var(--coral-tint); border-color: #c9734f; color: var(--coral-dark); padding: 22px; }
+    .flow-hub > p { color: #b3461f; margin-bottom: 14px; }
+    .flow-hub .grid { gap: 12px; }
+    .flow-hub .hub-box { border: 1px solid #c9734f; border-radius: 10px; padding: 10px; background: rgba(255,255,255,.35); }
+    .flow-hub .hub-box b { display: block; font-weight: 500; font-size: 1.08rem; }
+    .flow-hub .hub-box span { color: #b3461f; font-size: .95rem; }
+    .flow-hub .hub-out { margin-top: 12px; border: 1.5px dashed #c9734f; border-radius: 10px; padding: 12px; color: #b3461f; }
+    .flow-fan { position: relative; height: 70px; }
+    .flow-fan svg { width: 100%; height: 100%; display: block; }
+    .flow-aud { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .flow-aud .col { display: flex; flex-direction: column; align-items: stretch; }
+    .flow-aud .aud { background: var(--inj-tint); border-color: #4fa886; color: var(--inj-dark); }
+    .flow-aud .aud p { color: var(--inj); }
+    .flow-aud .down { height: 52px; position: relative; }
+    .flow-aud .down::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 6px; width: 1.5px; background: var(--inj); }
+    .flow-aud .down::after { content: ""; position: absolute; left: calc(50% - 4px); bottom: 0; border: 4px solid transparent; border-top: 6px solid var(--inj); }
+    .flow-aud .effect { background: var(--sand); border-color: #b9b4a6; color: var(--ink-2); padding: 14px; }
+    @media (max-width: 760px) {
+      .flow-conn span { left: 50%; transform: translate(-50%, -60%); background: var(--bg); padding: 2px 8px; z-index: 1; font-size: .85rem; white-space: normal; text-align: center; max-width: 90%; }
+      .flow-fan { display: none; }
+      .flow-aud { grid-template-columns: 1fr 1fr; margin-top: 18px; }
+      .flow-aud-label { margin-top: 18px !important; }
+    }
+    @media (max-width: 420px) { .flow-aud { grid-template-columns: 1fr; } }
+
+    /* --- Zespół --- */
+    .person { display: flex; flex-direction: column; gap: 10px; }
+    .person .avatar { width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center; font-weight: 600; font-size: 1.4rem; }
+    .person h3 { margin: 0; font-size: 1.1rem; }
+    .person .role { font-size: .9rem; color: var(--ncd); font-weight: 600; }
+    .person .aff { font-size: .9rem; color: var(--ink-3); }
+    .person p { font-size: .93rem; color: var(--ink-2); margin: 0; }
+    .person .links { display: flex; gap: 12px; font-size: .88rem; margin-top: auto; }
+
+    /* --- Partnerzy --- */
+    .logo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+    .logo-tile { display: flex; flex-direction: column; gap: 8px; text-decoration: none; color: inherit; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; transition: .15s; }
+    .logo-tile:hover { box-shadow: var(--shadow); transform: translateY(-2px); color: inherit; }
+    .logo-tile .logo { height: 64px; border-radius: 10px; display: grid; place-items: center; font-weight: 700; letter-spacing: .04em; background: var(--sand); color: var(--ink-3); font-size: 1.05rem; }
+    .logo-tile b { font-weight: 600; }
+    .logo-tile span { font-size: .88rem; color: var(--ink-3); }
+  </style>
+</head>
+<body>
+  <div data-site-header></div>
+
+  <main id="main">
+    <section class="page-hero">
+      <div class="container">
+        <nav class="breadcrumbs" aria-label="Okruszki"><a href="index.html">Start</a> / O nas</nav>
+        <span class="eyebrow">O nas</span>
+        <h1>GBD Research Hub</h1>
+        <p class="lead">Kim jesteśmy, czym jest Global Burden of Disease Study i jak przekładamy globalne dane na wiedzę dla Polski i regionu Europy Środkowo-Wschodniej.</p>
+        <nav class="toc" aria-label="Spis treści">
+          <a href="#kim-jestesmy">Kim jesteśmy</a>
+          <a href="#czym-jest-gbd">Czym jest GBD</a>
+          <a href="#os-czasu">Oś czasu GBD</a>
+          <a href="metodologia.html">Metodologia →</a>
+          <a href="#zespol">Zespół</a>
+          <a href="#partnerzy">Partnerzy</a>
+        </nav>
+      </div>
+    </section>
+
+    <!-- 2.1 Kim jesteśmy -->
+    <section class="section" id="kim-jestesmy">
+      <div class="container">
+        <div class="grid g2" style="gap:48px;align-items:start;grid-template-columns:1.1fr .9fr">
+          <div class="prose">
+            <span class="eyebrow">2.1 · Kim jesteśmy</span>
+            <h2>GBD Research Hub — kim jesteśmy</h2>
+            <p>GBD Research Hub to zespół badaczy działający przy [nazwa instytucji], poświęcony analizie i upowszechnianiu danych z projektu Global Burden of Disease Study na potrzeby Polski i regionu Europy Środkowo-Wschodniej.</p>
+            <p>Naszym celem jest przekształcanie złożonych danych epidemiologicznych w wiedzę, która wspiera podejmowanie decyzji zdrowotnych — od poziomu krajowego po województwa, od strategii rządowych po codzienną praktykę zdrowia publicznego.</p>
+            <p>Hub powstał w [rok] z przekonania, że dane GBD — choć globalnie uznane — wymagają lokalnej interpretacji, kontekstualizacji i komunikacji. Łączymy kompetencje epidemiologiczne, analityczne i komunikacyjne, aby dane GBD były nie tylko dostępne, ale i zrozumiałe dla polskich i regionalnych odbiorców: decydentów, badaczy, mediów i studentów.</p>
+          </div>
+          <div>
+            <div class="todo"><strong>Afiliacja i rok powstania Hubu</strong> — do dopisania na podstawie zarządzenia powołującego (pełna nazwa instytucji, jednostka, data utworzenia).</div>
+            <div class="grid g2 mt-2" style="gap:12px">
+              <div class="kpi"><div class="k-label">Instytucja</div><div class="k-value" style="font-size:1.2rem">[nazwa]</div></div>
+              <div class="kpi"><div class="k-label">Rok powstania</div><div class="k-value" style="font-size:1.2rem">[rok]</div></div>
+              <div class="kpi"><div class="k-label">Edycja GBD</div><div class="k-value" style="font-size:1.2rem">GBD 2023</div></div>
+              <div class="kpi"><div class="k-label">Zasięg</div><div class="k-value" style="font-size:1.2rem">PL + CEE</div></div>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="mt-3 center">Jak pracujemy — od danych globalnych do decyzji lokalnych</h3>
+        <div class="flow mt-2" role="figure" aria-label="Schemat: dane IHME trafiają do GBD Research Hub, który przekazuje je decydentom, badaczom, mediom i edukacji">
+          <p class="flow-label">Źródło danych</p>
+          <div class="flow-node flow-src">
+            <h4>IHME / Global Burden of Disease Study</h4>
+            <p>Globalne szacunki dla 204 krajów</p>
+          </div>
+          <div class="flow-conn"><span>Dane globalne, surowe szacunki</span></div>
+          <div class="flow-node flow-hub">
+            <h4>GBD Research Hub</h4>
+            <p>Lokalizacja, analiza, komunikacja</p>
+            <div class="grid g3">
+              <div class="hub-box"><b>Analiza</b><span>Kontekst PL i CEE</span></div>
+              <div class="hub-box"><b>Wizualizacja</b><span>Dashboardy, mapy</span></div>
+              <div class="hub-box"><b>Translacja</b><span>Język odbiorcy</span></div>
+            </div>
+            <div class="hub-out">Publikacje naukowe, policy briefs, infografiki, Data Stories, materiały dydaktyczne</div>
+          </div>
+          <div class="flow-fan" aria-hidden="true">
+            <svg viewBox="0 0 1000 70" preserveAspectRatio="none">
+              <defs><marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="#d85a30"/></marker></defs>
+              <g stroke="#d85a30" stroke-width="1.4" fill="none" marker-end="url(#arr)" vector-effect="non-scaling-stroke">
+                <line x1="310" y1="0" x2="125" y2="66"/>
+                <line x1="440" y1="0" x2="375" y2="66"/>
+                <line x1="560" y1="0" x2="625" y2="66"/>
+                <line x1="690" y1="0" x2="875" y2="66"/>
+              </g>
+            </svg>
+          </div>
+          <p class="flow-label flow-aud-label">Odbiorcy</p>
+          <div class="flow-aud">
+            <div class="col"><div class="flow-node aud"><h4>Decydenci</h4><p>Ministerstwa<br>Urzędy wojewódzkie</p></div><div class="down"></div><div class="flow-node effect">Polityka zdrowotna</div></div>
+            <div class="col"><div class="flow-node aud"><h4>Badacze</h4><p>Epidemiolodzy<br>Zdrowie publiczne</p></div><div class="down"></div><div class="flow-node effect">Nowe badania</div></div>
+            <div class="col"><div class="flow-node aud"><h4>Media</h4><p>Dziennikarze<br>Infografiki, dane</p></div><div class="down"></div><div class="flow-node effect">Świadomość publiczna</div></div>
+            <div class="col"><div class="flow-node aud"><h4>Edukacja</h4><p>Studenci<br>Wykładowcy</p></div><div class="down"></div><div class="flow-node effect">Kompetencje kadr</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2.2 Czym jest GBD -->
+    <section class="section alt" id="czym-jest-gbd">
+      <div class="container">
+        <div class="grid g2" style="gap:48px;align-items:start;grid-template-columns:1.1fr .9fr">
+          <div class="prose">
+            <span class="eyebrow">2.2 · Czym jest GBD</span>
+            <h2>Global Burden of Disease Study</h2>
+            <p>Global Burden of Disease Study (GBD) to największe na świecie systematyczne badanie epidemiologiczne, koordynowane przez Institute for Health Metrics and Evaluation (IHME) przy Uniwersytecie Waszyngtońskim w Seattle. Projekt angażuje ponad 11 000 współpracowników z ponad 160 krajów.</p>
+            <p>GBD dostarcza porównywalne szacunki dotyczące umieralności, zachorowalności, niepełnosprawności i czynników ryzyka dla ponad 370 chorób i urazów oraz ponad 80 czynników ryzyka — w podziale na kraje, regiony, grupy wiekowe i płeć. Dane obejmują okres od 1990 roku do dziś i są regularnie aktualizowane.</p>
+            <p>Dzięki ujednoliconej metodologii GBD umożliwia porównania między krajami, śledzenie trendów w czasie i identyfikację priorytetów zdrowotnych opartych na danych — a nie na intuicji czy tradycji. To czyni go jednym z najważniejszych narzędzi wspierających politykę zdrowotną na świecie.</p>
+            <p><a class="btn btn-ghost" href="metodologia.html">Jak działa metodologia GBD →</a></p>
+          </div>
+          <div class="grid g2" style="gap:12px">
+            <div class="stat blue"><div class="label">Współpracowników</div><div class="value" data-count="11000">0</div><div class="sub">z ponad 160 krajów</div></div>
+            <div class="stat coral"><div class="label">Chorób i urazów</div><div class="value" data-count="371">0</div><div class="sub">w hierarchii przyczyn</div></div>
+            <div class="stat coral"><div class="label">Czynników ryzyka</div><div class="value" data-count="88">0</div><div class="sub">behawioralne, metaboliczne, środowiskowe</div></div>
+            <div class="stat blue"><div class="label">Krajów i terytoriów</div><div class="value" data-count="204">0</div><div class="sub">dane od 1990 r.</div></div>
+          </div>
+        </div>
+
+        <div id="os-czasu" class="anchor-sub">
+          <div class="section-head">
+            <span class="eyebrow">Historia</span>
+            <h2>Oś czasu projektu GBD</h2>
+            <div class="legend"><span><i style="background:var(--ncd)"></i>Kamienie milowe GBD</span><span><i style="background:var(--coral)"></i>Polska</span><span><i style="background:var(--purple)"></i>Instytucje i edycje</span><span><i style="background:var(--amber)"></i>Przyszłość</span></div>
+          </div>
+          <ol class="timeline narrow">
+            <li>
+              <div class="year">1990</div><div class="dot"></div>
+              <div><h4>GBD 1990 <span class="badge" style="background:var(--ncd-tint);color:var(--ncd-dark)">Początek</span></h4>
+                <p>Pierwsze badanie zlecone przez Bank Światowy. Christopher Murray i Alan Lopez tworzą ramy metodologiczne. Analiza obejmuje 107 chorób i 10 czynników ryzyka. Publikacja w World Development Report 1993 — rewolucja w myśleniu o zdrowiu globalnym.</p>
+                <div class="callout tone-blue" style="color:var(--ncd-dark)">Wprowadzono pojęcie DALY — pierwszy uniwersalny miernik obciążenia chorobami</div></div>
+            </li>
+            <li data-tone="pl">
+              <div class="year">2000</div><div class="dot"></div>
+              <div><h4>Polskie wydanie Global Burden of Disease <span class="badge" style="background:var(--coral-tint);color:var(--coral-dark)">Polska</span></h4>
+                <p>Ukazuje się polskie tłumaczenie pracy „Global Burden of Disease" — jedna z pierwszych publikacji wprowadzających koncepcję GBD i wskaźnik DALY do polskiego dyskursu naukowego i zdrowotno-publicznego.</p></div>
+            </li>
+            <li data-tone="pl">
+              <div class="year">2001</div><div class="dot"></div>
+              <div><h4>Wskaźnik DALY w ocenie potrzeb zdrowotnych <span class="badge" style="background:var(--coral-tint);color:var(--coral-dark)">Polska</span></h4>
+                <p>Wskaźnik DALY zostaje włączony do podręcznika „Potrzeby Zdrowotne" w ramach projektu Banku Światowego i Ministerstwa Zdrowia. To jedno z pierwszych zastosowań miar GBD w planowaniu polityki zdrowotnej w Polsce.</p></div>
+            </li>
+            <li data-tone="purple">
+              <div class="year">2007</div><div class="dot"></div>
+              <div><h4>Utworzenie IHME</h4>
+                <p>Utworzenie Institute for Health Metrics and Evaluation przy Uniwersytecie Waszyngtońskim w Seattle. IHME przejmuje koordynację GBD i zaczyna budować globalną sieć współpracowników obejmującą ponad 160 krajów.</p></div>
+            </li>
+            <li>
+              <div class="year">2010</div><div class="dot"></div>
+              <div><h4>GBD 2010 <span class="badge" style="background:var(--ncd-tint);color:var(--ncd-dark)">Przełom</span></h4>
+                <p>Radykalna rozbudowa: 291 chorób, 67 czynników ryzyka, 187 krajów, pełna seria od 1990. Ponad 7 publikacji w The Lancet w jednym numerze. Zaangażowanych 488 autorów z 50 krajów. Pierwszy raz — pełny obraz zdrowia świata w jednym badaniu.</p>
+                <div class="callout tone-blue" style="color:var(--ncd-dark)">Przejście od jednorazowego badania do ciągłego programu naukowego</div></div>
+            </li>
+            <li data-tone="green">
+              <div class="year">2013–15</div><div class="dot"></div>
+              <div><h4>GBD 2013 i 2015 — coroczne aktualizacje</h4>
+                <p>GBD staje się projektem rocznym — każda edycja dodaje nowe lata danych i udoskonala metody. Sieć współpracowników rośnie do ponad 3 000 badaczy. Dodano szacunki subnarodowe dla wybranych krajów.</p></div>
+            </li>
+            <li>
+              <div class="year">2019</div><div class="dot"></div>
+              <div><h4>GBD 2019 <span class="badge" style="background:var(--ncd-tint);color:var(--ncd-dark)">Dojrzałość</span></h4>
+                <p>369 chorób i urazów, 87 czynników ryzyka, 204 kraje i terytoria. Ponad 5 000 współpracowników. Dane wykorzystywane przez WHO, rządy, agencje ONZ, media i uczelnie na całym świecie.</p>
+                <div class="callout tone-green" style="color:var(--inj-dark)">Ostatnia pełna edycja przed pandemią COVID-19</div></div>
+            </li>
+            <li data-tone="purple">
+              <div class="year">2021</div><div class="dot"></div>
+              <div><h4>GBD 2021</h4>
+                <p>Pierwsza edycja obejmująca pełny wpływ pandemii COVID-19 na obciążenie chorobami. 371 chorób, 88 czynników ryzyka. Szacunki nadmiarowej śmiertelności pandemicznej. Ponad 11 000 współpracowników z 160+ krajów.</p></div>
+            </li>
+            <li data-tone="pl">
+              <div class="year">2025</div><div class="dot"></div>
+              <div><h4>Analizy subnarodowe dla Polski i publikacja w Lancet Europe <span class="badge" style="background:var(--coral-tint);color:var(--coral-dark)">Polska</span></h4>
+                <p>GBD Research Hub realizuje analizy obciążenia chorobami na poziomie województw dla Polski za lata 1990–2023. Wyniki ukazują się w The Lancet Regional Health — Europe, prezentując Polskę na tle Europy i dokumentując zróżnicowanie wewnątrzkrajowe.</p>
+                <div class="callout tone-coral" style="color:var(--coral-dark)">Pierwsza kompleksowa analiza GBD na poziomie 16 województw polskich</div></div>
+            </li>
+            <li data-tone="amber">
+              <div class="year">2025+</div><div class="dot"></div>
+              <div><h4>GBD Research Hub — przyszłość <span class="badge" style="background:var(--amber-tint);color:var(--amber-dark)">W toku</span></h4>
+                <p>Coroczne aktualizacje danych GBD, rozbudowa dashboardów krajowych i wojewódzkich, analizy porównawcze CEE, materiały dydaktyczne i policy briefs. Hub wnosi do globalnego ekosystemu GBD perspektywę polską i środkowoeuropejską.</p></div>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2.3 Metodologia — odesłanie -->
+    <section class="section tight">
+      <div class="container">
+        <a class="tone tone-blue" href="metodologia.html" style="display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;text-decoration:none">
+          <div><span class="eyebrow">2.3 · Metodologia</span><h3 class="mb-0">Jak GBD liczy obciążenie chorobami?</h3><p class="mt-1 mb-0">DALY, YLL, YLD, hierarchia przyczyn i czynników ryzyka, standaryzacja wieku, słownik pojęć i przewodnik po danych.</p></div>
+          <span class="btn btn-primary">Przejdź do metodologii →</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- 2.4 Zespół -->
+    <section class="section alt" id="zespol">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">2.4 · Zespół</span>
+          <h2>Ludzie Hubu</h2>
+          <p class="muted">Epidemiolodzy, analitycy danych i specjaliści komunikacji zdrowotnej.</p>
+        </div>
+        <div class="todo mb-2"><strong>Lista osób, biogramy, zdjęcia.</strong> Na start mogą być same nazwiska. Docelowo profil każdej osoby: zdjęcie, imię i nazwisko, afiliacja, rola w Hubie, krótki biogram (3–4 zdania), ORCID i/lub link do profilu instytucjonalnego.</div>
+        <div class="grid g3" id="team"></div>
+      </div>
+    </section>
+
+    <!-- 2.5 Partnerzy -->
+    <section class="section" id="partnerzy">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">2.5 · Partnerzy</span>
+          <h2>Instytucje partnerskie</h2>
+          <p class="muted">Współpracujemy z instytucjami krajowymi i zagranicznymi.</p>
+        </div>
+        <div class="todo mb-2"><strong>Lista partnerów</strong> — logotypy, krótkie opisy i linki do instytucji krajowych i zagranicznych.</div>
+        <div class="logo-grid">
+          <a class="logo-tile" href="https://www.healthdata.org/" rel="noopener" target="_blank">
+            <div class="logo" style="background:var(--ncd-tint);color:var(--ncd-dark)">IHME</div>
+            <b>Institute for Health Metrics and Evaluation</b>
+            <span>Koordynator projektu GBD, University of Washington, Seattle ↗</span>
+          </a>
+          <a class="logo-tile" href="#partnerzy"><div class="logo">LOGO</div><b>[Partner krajowy]</b><span>[Krótki opis instytucji]</span></a>
+          <a class="logo-tile" href="#partnerzy"><div class="logo">LOGO</div><b>[Partner krajowy]</b><span>[Krótki opis instytucji]</span></a>
+          <a class="logo-tile" href="#partnerzy"><div class="logo">LOGO</div><b>[Partner zagraniczny]</b><span>[Krótki opis instytucji]</span></a>
+          <a class="logo-tile" href="#partnerzy"><div class="logo">LOGO</div><b>[Partner zagraniczny]</b><span>[Krótki opis instytucji]</span></a>
+        </div>
+
+        <div class="todo mt-3"><strong>Pomysł na przyszłość: mapa interaktywna „GBD w CEE — kto nas czyta".</strong> Mapa regionu CEE z oznaczeniem instytucji partnerskich, współpracowników i miast, w których odbywają się warsztaty. Buduje poczucie sieci.</div>
+      </div>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/site.js"></script>
+  <script src="assets/js/pages/o-nas.js"></script>
+</body>
+</html>

@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GBD w nauczaniu — GBD Research Hub</title>
+  <meta name="description" content="Materiały dydaktyczne GBD Research Hub: redystrybucja garbage codes, cytowanie danych GBD, quiz, case studies i wideo-tutoriale.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <style>
+    /* Garbage codes — słupki */
+    .gc-bars { display: grid; grid-template-columns: 190px 1fr; gap: 10px 14px; align-items: center; margin: 18px 0 14px; }
+    .gc-bars .lbl { text-align: right; font-size: .95rem; }
+    .gc-track { height: 36px; border-radius: 8px; background: rgba(255,255,255,.55); overflow: hidden; display: flex; gap: 4px; }
+    .gc-track > div { height: 100%; border-radius: 7px; display: flex; align-items: center; padding: 0 12px; color: #fff; font-size: .9rem; white-space: nowrap; overflow: hidden; }
+    .gc-track .raw { background: var(--ncd-mid); color: var(--ncd-dark); }
+    .gc-track .redis { background: var(--ncd); }
+    .gc-head { font-size: .85rem; display: flex; gap: 14px; }
+    .gc-head span { display: inline-flex; gap: 6px; align-items: center; }
+    .gc-head i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+    @media (max-width: 620px) { .gc-bars { grid-template-columns: 1fr; gap: 4px; } .gc-bars .lbl { text-align: left; margin-top: 6px; } }
+
+    /* Cytowania */
+    .cite-group-title { font-size: 1.15rem; margin: 36px 0 14px; }
+    .cite-card { margin-bottom: 14px; }
+    .cite-card .num { display: inline-grid; place-items: center; min-width: 26px; height: 22px; padding: 0 8px; border-radius: 999px; color: #fff; font-size: .8rem; font-weight: 600; margin-right: 8px; vertical-align: 2px; }
+    .cite-box { padding-top: 38px; color: var(--ink); }
+    .intext { font-style: italic; }
+    .mistake h4 { margin-bottom: .25em; }
+
+    /* Quiz */
+    .quiz-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+    .quiz-score { font-size: 1.1rem; font-weight: 600; color: var(--ncd-dark); background: var(--ncd-tint); padding: 6px 16px; border-radius: 999px; }
+    .q { min-width: 0; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px 24px; margin-bottom: 14px; }
+    .q h3 { font-size: 1.1rem; }
+    .q h3 .qn { color: var(--ink-3); font-weight: 500; margin-right: 6px; }
+    .q-opts { display: grid; gap: 8px; margin-top: 12px; }
+    .q-opts button { text-align: left; font: inherit; font-size: .97rem; padding: 11px 14px; border-radius: 10px; border: 1px solid var(--line); background: #fff; cursor: pointer; color: var(--ink); transition: .12s; }
+    .q-opts button:hover:not(:disabled) { border-color: var(--ncd); background: var(--ncd-tint); }
+    .q-opts button:disabled { cursor: default; }
+    .q-opts button.correct { background: var(--inj-tint); border-color: var(--inj); color: var(--inj-dark); font-weight: 600; }
+    .q-opts button.wrong { background: var(--coral-tint); border-color: var(--coral); color: var(--coral-dark); }
+    .q-opts button.correct::before { content: "✓ "; }
+    .q-opts button.wrong::before { content: "✗ "; }
+    .q-fb { display: none; margin-top: 12px; padding: 12px 16px; border-radius: 10px; font-size: .95rem; }
+    .q-fb.show { display: block; }
+    .q-fb.ok { background: var(--inj-tint); color: var(--inj-dark); }
+    .q-fb.bad { background: var(--amber-tint); color: var(--amber-dark); }
+    .quiz-done { display: none; }
+    .quiz-done.show { display: block; }
+
+    /* Wideo */
+    .video-thumb { aspect-ratio: 16/9; border-radius: var(--radius-sm); background: linear-gradient(135deg, var(--ncd-dark), var(--ncd)); display: grid; place-items: center; margin-bottom: 14px; position: relative; overflow: hidden; }
+    .video-thumb::after { content: ""; width: 0; height: 0; border-left: 22px solid #fff; border-top: 14px solid transparent; border-bottom: 14px solid transparent; margin-left: 6px; opacity: .9; }
+    .video-thumb .soon { position: absolute; top: 10px; left: 10px; }
+  </style>
+</head>
+<body>
+  <div data-site-header></div>
+
+  <main id="main">
+    <section class="page-hero">
+      <div class="container">
+        <div class="breadcrumbs"><a href="index.html">Start</a> / GBD w nauczaniu</div>
+        <span class="eyebrow">7. GBD w nauczaniu</span>
+        <h1>GBD w nauczaniu</h1>
+        <p class="lead">Sekcja dla wykładowców, doktorantów i studentów zdrowia publicznego, epidemiologii i nauk o zdrowiu.</p>
+        <p>Dane GBD stanowią wyjątkowy zasób dydaktyczny — pozwalają studentom pracować z rzeczywistymi danymi o zdrowiu populacji w skali globalnej, regionalnej i krajowej. GBD Research Hub udostępnia materiały, które ułatwiają włączenie danych GBD do programów nauczania na kierunkach zdrowia publicznego, epidemiologii i pokrewnych.</p>
+        <nav class="toc" aria-label="Spis treści">
+          <a href="#garbage-codes">Redystrybucja garbage codes</a>
+          <a href="#cytowanie">Jak cytować dane GBD?</a>
+          <a href="#quiz">Quiz</a>
+          <a href="#materialy">7.1 Materiały do kursów</a>
+          <a href="#case-studies">7.2 Case studies</a>
+          <a href="#wideo">7.3 Wideo-tutoriale</a>
+        </nav>
+      </div>
+    </section>
+
+    <!-- ================= Garbage codes ================= -->
+    <section class="section" id="garbage-codes">
+      <div class="container narrow">
+        <div class="section-head">
+          <span class="eyebrow">Przykład materiału</span>
+          <h2>Jak działa redystrybucja garbage codes?</h2>
+          <p class="lead">To klucz do zrozumienia, dlaczego dane GBD o przyczynach zgonów różnią się od surowych danych GUS.</p>
+        </div>
+
+        <div class="tone tone-coral">
+          <h3>Problem: karta zgonu w Polsce</h3>
+          <p>Lekarz wpisuje na kartę zgonu przyczynę, która nie jest analitycznie użyteczna — np. „niewydolność serca”, „miażdżyca” lub „zatrzymanie krążenia”. To nie są właściwe przyczyny zgonu, a ich objawy lub mechanizmy końcowe. WHO klasyfikuje je jako garbage codes.</p>
+          <div class="gc-bars" role="img" aria-label="Garbage codes w Polsce około 30%, poprawnie zakodowane około 70%">
+            <div class="lbl">Garbage codes w Polsce</div>
+            <div class="gc-track"><div style="width:30%;background:var(--coral)">~30%</div></div>
+            <div class="lbl">Poprawnie zakodowane</div>
+            <div class="gc-track"><div style="width:70%;background:#7b8794">~70%</div></div>
+          </div>
+          <div class="pills">
+            <span class="pill coral" style="background:#f3cfc2">„Niewydolność serca” (I50)</span>
+            <span class="pill coral" style="background:#f3cfc2">„Miażdżyca” (I70)</span>
+            <span class="pill coral" style="background:#f3cfc2">„Zatrzymanie krążenia” (I46)</span>
+            <span class="pill coral" style="background:#f3cfc2">„Nowotwór nieokreślony” (C80)</span>
+            <span class="pill coral" style="background:#f3cfc2">„Posocznica” (A41)</span>
+          </div>
+        </div>
+
+        <h3 class="center mt-3 mb-2" style="font-weight:500">Jak GBD to koryguje?</h3>
+        <ol class="steps compact">
+          <li>
+            <h4>Identyfikacja garbage codes</h4>
+            <p>GBD klasyfikuje kody ICD, które nie powinny być wpisywane jako podstawowa przyczyna zgonu. Cztery typy: kody pośrednie (np. niewydolność serca), kody niespecyficzne (np. nowotwór nieokreślony), kody mechanizmu (np. zatrzymanie krążenia), kody niewłaściwe jako przyczyna zgonu.</p>
+          </li>
+          <li data-tone="amber">
+            <h4>Ustalenie pakietu docelowych przyczyn</h4>
+            <p>Dla każdego garbage code GBD ustala, do jakich właściwych przyczyn zgonu powinien zostać przeniesiony. Np. „niewydolność serca” redystrybuowana jest do: choroby niedokrwiennej serca, kardiomiopatii, choroby nadciśnieniowej serca, wad zastawkowych — proporcjonalnie.</p>
+          </li>
+          <li data-tone="green">
+            <h4>Redystrybucja proporcjonalna</h4>
+            <p>Algorytm GBD rozdziela zgony zakodowane jako garbage codes do właściwych przyczyn na podstawie danych z krajów z lepszym kodowaniem, badań klinicznych i modeli statystycznych. Każdy garbage code jest redystrybuowany, nie usuwany — łączna liczba zgonów się nie zmienia.</p>
+          </li>
+        </ol>
+
+        <div class="tone tone-blue mt-2">
+          <h3>Efekt: dane po korekcie GBD</h3>
+          <p>Po redystrybucji garbage codes obraz przyczyn umieralności zmienia się istotnie. Choroby serca i nowotwory „rosną” — bo wchłaniają zgony wcześniej ukryte pod kodami niespecyficznymi. To nie jest zawyżanie, lecz korygowanie — przywracanie zgonom ich rzeczywistych przyczyn.</p>
+          <div class="gc-bars" role="img" aria-label="Przed i po korekcie GBD: choroba niedokrwienna serca, nowotwory i udar mózgu zyskują zgony z redystrybucji">
+            <div></div>
+            <div class="gc-head"><span><i style="background:var(--ncd-mid)"></i>Przed korektą GBD (surowe)</span><span><i style="background:var(--ncd)"></i>Po korekcie GBD (+ redystrybucja)</span></div>
+            <div class="lbl">Ch. niedokrwienna serca</div>
+            <div class="gc-track"><div class="raw" style="width:53%">surowe</div><div class="redis" style="width:26.5%">+redystr.</div></div>
+            <div class="lbl">Nowotwory (łącznie)</div>
+            <div class="gc-track"><div class="raw" style="width:47.6%">surowe</div><div class="redis" style="width:15.9%">+redystr.</div></div>
+            <div class="lbl">Udar mózgu</div>
+            <div class="gc-track"><div class="raw" style="width:31.7%">surowe</div><div class="redis" style="width:10.6%">+redystr.</div></div>
+          </div>
+        </div>
+
+        <div class="tone tone-sand no-border mt-2">
+          <p class="small">Proporcje na wykresach są przykładowe — ilustrują mechanizm, nie konkretne wartości. Dokładne wyniki redystrybucji zależą od edycji GBD, roku i struktury garbage codes w danym kraju. Pełna metodologia: GBD 2021 Causes of Death Collaborators, The Lancet.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Cytowanie ================= -->
+    <section class="section alt" id="cytowanie">
+      <div class="container narrow">
+        <div class="section-head">
+          <span class="eyebrow">Przykład materiału</span>
+          <h2>Jak cytować dane GBD?</h2>
+          <p class="lead">Gotowe wzory w trzech formatach. Przycisk „Kopiuj” kopiuje cytowanie do schowka.</p>
+        </div>
+
+        <h3 class="cite-group-title" style="margin-top:0">Cytowanie publikacji GBD — trzy formaty</h3>
+
+        <div class="tone tone-blue cite-card">
+          <h4><span class="num" style="background:var(--ncd)">1</span>Vancouver</h4>
+          <p>Stosowany w większości czasopism medycznych (The Lancet, BMJ, NEJM). Numeracja w kolejności cytowania.</p>
+          <div class="cite-box" style="background:var(--ncd-mid)">GBD 2021 Causes of Death Collaborators. Global burden of 288 causes of death and life expectancy decomposition in 204 countries and territories and 811 subnational locations, 1990–2021: a systematic analysis for the Global Burden of Disease Study 2021. Lancet. 2024;403(10440):2100-32.</div>
+        </div>
+
+        <div class="tone tone-purple cite-card">
+          <h4><span class="num" style="background:var(--purple)">2</span>AMA (American Medical Association)</h4>
+          <p>Stosowany w JAMA i wielu amerykańskich czasopismach medycznych. Podobny do Vancouver, z drobnymi różnicami w interpunkcji.</p>
+          <div class="cite-box" style="background:var(--purple-mid)">GBD 2021 Causes of Death Collaborators. Global burden of 288 causes of death and life expectancy decomposition in 204 countries and territories and 811 subnational locations, 1990–2021: a systematic analysis for the Global Burden of Disease Study 2021. <i>Lancet</i>. 2024;403(10440):2100-2132. doi:10.1016/S0140-6736(24)00367-2</div>
+        </div>
+
+        <div class="tone tone-amber cite-card">
+          <h4><span class="num" style="background:var(--amber-dark)">3</span>APA (7th edition)</h4>
+          <p>Stosowany w naukach społecznych, psychologii, zdrowiu publicznym. Cytowanie autor-rok w tekście.</p>
+          <div class="cite-box" style="background:var(--amber-mid)">GBD 2021 Causes of Death Collaborators. (2024). Global burden of 288 causes of death and life expectancy decomposition in 204 countries and territories and 811 subnational locations, 1990–2021: A systematic analysis for the Global Burden of Disease Study 2021. <i>The Lancet, 403</i>(10440), 2100–2132. https://doi.org/10.1016/S0140-6736(24)00367-2</div>
+        </div>
+
+        <h3 class="cite-group-title">Cytowanie GBD Results Tool (dane pobrane z narzędzia)</h3>
+
+        <div class="tone tone-blue cite-card">
+          <h4><span class="num" style="background:var(--ncd)">1</span>Vancouver</h4>
+          <div class="cite-box" style="background:var(--ncd-mid)">Institute for Health Metrics and Evaluation (IHME). GBD Results Tool [Internet]. Seattle, WA: IHME, University of Washington; 2024 [cited 2025 Mar 15]. Available from: https://vizhub.healthdata.org/gbd-results/</div>
+        </div>
+
+        <div class="tone tone-amber cite-card">
+          <h4><span class="num" style="background:var(--amber-dark)">3</span>APA</h4>
+          <div class="cite-box" style="background:var(--amber-mid)">Institute for Health Metrics and Evaluation. (2024). <i>GBD Results Tool</i>. University of Washington. Retrieved March 15, 2025, from https://vizhub.healthdata.org/gbd-results/</div>
+        </div>
+
+        <h3 class="cite-group-title">Poprawne cytowanie w tekście</h3>
+        <div class="tone tone-blue cite-card">
+          <h4>Vancouver / AMA (numer w nawiasie)</h4>
+          <p class="intext">„Standaryzowany współczynnik umieralności z powodu choroby niedokrwiennej serca w Polsce w 2021 r. wynosił 148 (95% UI: 135–162) na 100 000 ludności (1).”</p>
+        </div>
+        <div class="tone tone-amber cite-card">
+          <h4>APA (autor-rok)</h4>
+          <p class="intext">„Standaryzowany współczynnik umieralności z powodu choroby niedokrwiennej serca w Polsce w 2021 r. wynosił 148 (95% UI: 135–162) na 100 000 ludności (GBD 2021 Causes of Death Collaborators, 2024).”</p>
+        </div>
+        <p class="sample-note">Wartości w przykładach cytowania w tekście są ilustracyjne — do weryfikacji z GBD Results Tool.</p>
+
+        <h3 class="cite-group-title">Najczęstsze błędy</h3>
+        <div class="grid g2">
+          <div class="tone tone-amber mistake"><h4>Brak edycji GBD</h4><p>„Według GBD, umieralność wynosi…” — ale której edycji? GBD 2019 i GBD 2021 dają różne wyniki dla tego samego roku danych.</p></div>
+          <div class="tone tone-amber mistake"><h4>Brak przedziału niepewności</h4><p>Podanie samego szacunku punktowego bez UI. GBD zawsze podaje UI — cytujący też powinien.</p></div>
+          <div class="tone tone-amber mistake"><h4>Mylenie surowych i standaryzowanych</h4><p>Wskaźniki surowe (crude) i standaryzowane wg wieku (age-standardized) to różne liczby. Przy porównaniach między krajami — zawsze standaryzowane.</p></div>
+          <div class="tone tone-amber mistake"><h4>Umieralność vs. śmiertelność</h4><p>Mortality rate (umieralność) = zgony / populacja. Case fatality rate (śmiertelność) = zgony / chorzy. GBD raportuje mortality rate — nie mieszaj.</p></div>
+        </div>
+
+        <h3 class="cite-group-title">Dobre praktyki</h3>
+        <ol class="steps compact">
+          <li data-tone="green"><p>Nowa edycja GBD przelicza retrospektywnie WSZYSTKIE lata tą samą metodą. GBD 2021 daje inne wyniki za rok 2010 niż GBD 2019. Zawsze cytuj najnowszą edycję.</p></li>
+          <li><p>Przy porównaniach podaj, czy wskaźniki są standaryzowane wiekowo i jaką populację standardową zastosowano (GBD używa własnej standardowej populacji).</p></li>
+          <li data-tone="amber"><p>Gdy UI dwóch porównywanych wartości się nakładają — nie interpretuj różnicy jako istotnej. Wskaż to wprost w tekście.</p></li>
+          <li data-tone="purple"><p>Artykuł naukowy → cytuj publikację z The Lancet. Raport / policy brief → cytuj GBD Results Tool z datą dostępu. Nigdy nie cytuj samej strony IHME jako źródła danych.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ================= Quiz ================= -->
+    <section class="section" id="quiz">
+      <div class="container narrow">
+        <div class="section-head">
+          <span class="eyebrow">Interaktywnie</span>
+          <h2>Sprawdź swoją wiedzę o GBD</h2>
+          <p class="lead">Sześć pytań wielokrotnego wyboru z natychmiastową informacją zwrotną i odesłaniem do odpowiedniej sekcji strony.</p>
+        </div>
+        <div class="quiz-head">
+          <span class="quiz-score" id="quiz-score" aria-live="polite">Wynik: 0 / 6</span>
+          <button type="button" class="btn btn-ghost" id="quiz-reset">Zacznij od nowa</button>
+        </div>
+        <div id="quiz-box"></div>
+        <div class="tone tone-green quiz-done" id="quiz-done" role="status"></div>
+      </div>
+    </section>
+
+    <!-- ================= 7.1 ================= -->
+    <section class="section alt" id="materialy">
+      <div class="container narrow">
+        <span class="eyebrow">7.1</span>
+        <h2>Materiały do kursów <span class="badge">to może na później</span></h2>
+        <p class="lead">Gotowe moduły lub zestawy slajdów do wykorzystania w zajęciach dydaktycznych.</p>
+        <div class="todo"><strong>Materiały</strong> — moduły dydaktyczne i zestawy slajdów (PDF/PPTX) z opisem poziomu i czasu trwania zajęć.</div>
+      </div>
+    </section>
+
+    <!-- ================= 7.2 ================= -->
+    <section class="section" id="case-studies">
+      <div class="container narrow">
+        <span class="eyebrow">7.2</span>
+        <h2>Case studies</h2>
+        <p class="lead">Ćwiczenia analityczne oparte na danych GBD — z instrukcją i pytaniami do dyskusji.</p>
+
+        <article class="card">
+          <div class="pills mt-0" style="margin-bottom:10px"><span class="pill blue">Cukrzyca i choroby nerek</span><span class="pill">Polska vs Czechy</span><span class="pill">ok. 90 min</span><span class="badge">Przykład</span></div>
+          <h3>Porównaj obciążenie cukrzycą w Polsce i Czechach</h3>
+          <h4 class="mt-2">Instrukcja</h4>
+          <ol class="prose">
+            <li>W <a href="https://vizhub.healthdata.org/gbd-results/" rel="noopener">GBD Results Tool</a> wybierz: przyczyna — <em>Diabetes mellitus type 2</em>; lokalizacje — Polska, Czechy; miary — Deaths, DALYs, YLLs, YLDs; metryka — Rate; wiek — Age-standardized; lata 1990–najnowszy.</li>
+            <li>Pobierz dane w formacie CSV i przygotuj wykres trendu standaryzowanego współczynnika DALY dla obu krajów, z 95% UI.</li>
+            <li>Porównaj udział YLL i YLD w DALY w obu krajach.</li>
+            <li>Sprawdź, jaka część DALY z cukrzycy jest przypisywalna czynnikom ryzyka (wysoki BMI, dieta, niska aktywność fizyczna, wysoka glikemia).</li>
+          </ol>
+          <h4 class="mt-2">Pytania do dyskusji</h4>
+          <div class="todo"><strong>Pytania do dyskusji</strong> — np. czy różnica między krajami jest istotna, biorąc pod uwagę nakładanie się UI? Które czynniki ryzyka wyjaśniają różnice? Jakie interwencje sugerują dane?</div>
+        </article>
+        <div class="todo mt-2"><strong>Scenariusze case studies</strong> — kolejne ćwiczenia z instrukcjami, arkuszami danych i kluczem odpowiedzi dla prowadzących.</div>
+      </div>
+    </section>
+
+    <!-- ================= 7.3 ================= -->
+    <section class="section alt" id="wideo">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">7.3</span>
+          <h2>Wideo-tutoriale</h2>
+          <p class="lead">Krótkie filmy instruktażowe: jak korzystać z GBD Results Tool, jak interpretować wyniki, jak cytować dane GBD.</p>
+        </div>
+        <div class="grid g3">
+          <div class="card"><div class="video-thumb"><span class="badge soon">Wkrótce</span></div><h4>Jak korzystać z GBD Results Tool</h4><p class="muted small">Pobieranie danych krok po kroku: wybór miar, lokalizacji i eksport do CSV.</p></div>
+          <div class="card"><div class="video-thumb" style="background:linear-gradient(135deg,var(--coral-dark),var(--coral))"><span class="badge soon">Wkrótce</span></div><h4>Jak interpretować wyniki GBD</h4><p class="muted small">Szacunki punktowe, przedziały niepewności, wskaźniki standaryzowane.</p></div>
+          <div class="card"><div class="video-thumb" style="background:linear-gradient(135deg,var(--amber-dark),var(--amber))"><span class="badge soon">Wkrótce</span></div><h4>Jak cytować dane GBD</h4><p class="muted small">Formaty Vancouver, AMA i APA oraz cytowanie GBD Results Tool.</p></div>
+        </div>
+        <div class="todo mt-2"><strong>Scenariusze, produkcja wideo</strong> — scenariusze odcinków, nagrania i osadzenie filmów (np. YouTube).</div>
+      </div>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/site.js"></script>
+  <script src="assets/js/pages/nauczanie.js"></script>
+</body>
+</html>

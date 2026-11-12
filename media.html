@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Media — GBD Research Hub</title>
+  <meta name="description" content="GBD Research Hub w mediach, materiały dla dziennikarzy i kontakt dla mediów.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <style>
+    .media-list { list-style: none; margin: 0 0 18px; padding: 0; }
+    .media-item { display: grid; grid-template-columns: 150px 1fr; gap: 20px; padding: 18px 0; border-bottom: 1px solid var(--line); align-items: start; }
+    .media-item:first-child { padding-top: 0; }
+    .media-thumb { aspect-ratio: 4/3; border-radius: var(--radius-sm); display: grid; place-items: center; color: #fff; font-weight: 600; font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; }
+    .media-item .meta { font-size: .85rem; color: var(--ink-3); display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 4px; }
+    .media-item h3 { font-size: 1.08rem; margin-bottom: 4px; }
+    .media-item p { color: var(--ink-2); font-size: .95rem; margin: 0; }
+    @media (max-width: 560px) { .media-item { grid-template-columns: 1fr; } .media-thumb { aspect-ratio: 16/6; } }
+    .pack-icon { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; margin-bottom: 12px; }
+    .contact-card dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; margin: 0; }
+    .contact-card dt { color: var(--ink-3); font-size: .9rem; }
+    .contact-card dd { margin: 0; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div data-site-header></div>
+
+  <main id="main">
+    <section class="page-hero">
+      <div class="container">
+        <div class="breadcrumbs"><a href="index.html">Start</a> / Media</div>
+        <span class="eyebrow">8. Media</span>
+        <h1>Media</h1>
+        <p class="lead">Ta sekcja ma dwie funkcje: zbiera to, co mówią o nas media, i daje dziennikarzom gotowe materiały.</p>
+        <nav class="toc" aria-label="Spis treści">
+          <a href="#w-mediach">8.1 GBD w mediach</a>
+          <a href="#dla-dziennikarzy">8.2 Materiały dla dziennikarzy</a>
+          <a href="#kontakt-media">8.3 Kontakt dla mediów</a>
+        </nav>
+      </div>
+    </section>
+
+    <!-- 8.1 -->
+    <section class="section" id="w-mediach">
+      <div class="container narrow">
+        <div class="section-head">
+          <span class="eyebrow">8.1</span>
+          <h2>GBD w mediach</h2>
+          <p class="lead">Artykuły prasowe, wywiady, podcasty i wystąpienia medialne, w których cytowane są dane GBD lub członkowie Hubu.</p>
+        </div>
+        <ul class="media-list">
+          <li class="media-item">
+            <div class="media-thumb" style="background:var(--ncd)">Artykuł</div>
+            <div>
+              <div class="meta"><span class="pill blue">Prasa</span><time datetime="2026-10-28">28 października 2026</time><span>[Tytuł medium]</span></div>
+              <h3>[Przykład] Polacy żyją krócej niż Europejczycy z Zachodu. Co mówią dane GBD?</h3>
+              <p>Komentarz eksperta GBD Research Hub na temat luki zdrowotnej Wschód–Zachód. <a href="#">Czytaj w źródle ↗</a></p>
+            </div>
+          </li>
+          <li class="media-item">
+            <div class="media-thumb" style="background:var(--coral)">Podcast</div>
+            <div>
+              <div class="meta"><span class="pill coral">Podcast</span><time datetime="2026-09-30">30 września 2026</time><span>[Nazwa podcastu]</span></div>
+              <h3>[Przykład] Ból kręgosłupa, depresja, migrena — choroby, których nie widać w statystykach zgonów</h3>
+              <p>Rozmowa o tym, czym jest DALY i dlaczego zmienia obraz zdrowia Polaków. <a href="#">Posłuchaj ↗</a></p>
+            </div>
+          </li>
+          <li class="media-item">
+            <div class="media-thumb" style="background:var(--amber-dark)">Wywiad</div>
+            <div>
+              <div class="meta"><span class="pill amber">Telewizja</span><time datetime="2026-09-12">12 września 2026</time><span>[Stacja / program]</span></div>
+              <h3>[Przykład] Zdrowie w województwach: gdzie średnia krajowa wprowadza w błąd</h3>
+              <p>Wywiad o analizach subnarodowych GBD dla Polski. <a href="#">Obejrzyj ↗</a></p>
+            </div>
+          </li>
+        </ul>
+        <div class="todo"><strong>Linki, opisy</strong> — lista publikacji medialnych z miniaturami, datą, nazwą medium i krótkim opisem.</div>
+      </div>
+    </section>
+
+    <!-- 8.2 -->
+    <section class="section alt" id="dla-dziennikarzy">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">8.2</span>
+          <h2>Materiały dla dziennikarzy</h2>
+          <p class="lead">Pakiety prasowe: gotowe infografiki, streszczenia kluczowych danych i cytaty do wykorzystania. Aktualizujemy je przy nowych edycjach GBD i publikacjach.</p>
+        </div>
+        <div class="grid g3">
+          <div class="card">
+            <div class="pack-icon" style="background:var(--ncd-tint)"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="12" width="4" height="9" rx="1" fill="#1f5fa6"/><rect x="10" y="7" width="4" height="14" rx="1" fill="#1f5fa6"/><rect x="17" y="3" width="4" height="18" rx="1" fill="#1f5fa6"/></svg></div>
+            <h3>Infografiki</h3>
+            <p class="muted">Gotowe grafiki PNG/PDF w formatach do druku i mediów społecznościowych, z podanym źródłem i edycją GBD.</p>
+            <a href="policy.html#infografiki">Zobacz infografiki →</a>
+          </div>
+          <div class="card">
+            <div class="pack-icon" style="background:var(--coral-tint)"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2" fill="none" stroke="#d85a30" stroke-width="2"/><path d="M8 8h8M8 12h8M8 16h5" stroke="#d85a30" stroke-width="2" stroke-linecap="round"/></svg></div>
+            <h3>Streszczenia kluczowych danych</h3>
+            <p class="muted">Jednostronicowe podsumowania najważniejszych liczb dla Polski i regionu CEE, z przedziałami niepewności i krótkim objaśnieniem pojęć.</p>
+            <span class="badge">PDF — do uzupełnienia</span>
+          </div>
+          <div class="card">
+            <div class="pack-icon" style="background:var(--amber-tint)"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17V11a5 5 0 0 1 5-5M14 17v-6a5 5 0 0 1 5-5" fill="none" stroke="#7a4a0c" stroke-width="2.2" stroke-linecap="round"/></svg></div>
+            <h3>Cytaty do wykorzystania</h3>
+            <p class="muted">Autoryzowane wypowiedzi członków Hubu na temat kluczowych wyników, gotowe do użycia w materiałach prasowych.</p>
+            <span class="badge">Do uzupełnienia</span>
+          </div>
+        </div>
+        <div class="tone tone-sand no-border mt-2">
+          <h4>Jak opisywać dane GBD w tekstach prasowych</h4>
+          <p>Podawaj edycję GBD i rok danych, przy porównaniach używaj wskaźników standaryzowanych wiekowo i nie myl umieralności ze śmiertelnością. Więcej: <a href="nauczanie.html#cytowanie">Jak cytować dane GBD →</a></p>
+        </div>
+        <div class="todo mt-2"><strong>Materiały</strong> — pakiety prasowe do nowych edycji GBD i publikacji Hubu.</div>
+      </div>
+    </section>
+
+    <!-- 8.3 -->
+    <section class="section" id="kontakt-media">
+      <div class="container">
+        <div class="grid g2" style="gap:40px;align-items:start">
+          <div>
+            <span class="eyebrow">8.3</span>
+            <h2>Kontakt dla mediów</h2>
+            <p class="lead">Zapraszamy dziennikarzy do kontaktu. Członkowie GBD Research Hub są dostępni do komentarza, wywiadów i konsultacji eksperckich w tematach związanych z obciążeniem chorobami, czynnikami ryzyka i polityką zdrowotną w Polsce i regionie CEE.</p>
+            <div class="pills"><span class="pill blue">Obciążenie chorobami</span><span class="pill coral">Czynniki ryzyka</span><span class="pill amber">Polityka zdrowotna</span><span class="pill">Polska i CEE</span></div>
+          </div>
+          <div class="card contact-card">
+            <h3>Osoba do kontaktu z mediami</h3>
+            <dl>
+              <dt>Imię i nazwisko</dt><dd>[imię i nazwisko]</dd>
+              <dt>E-mail</dt><dd><a href="mailto:media@example.org">[e-mail]</a></dd>
+              <dt>Telefon</dt><dd>[telefon]</dd>
+            </dl>
+            <div class="tone tone-blue no-border mt-2"><p><strong>Jesteśmy dostępni do komentarza.</strong> Czas odpowiedzi: [X] godzin.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/site.js"></script>
+</body>
+</html>

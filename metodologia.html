@@ -1,0 +1,690 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Metodologia GBD — GBD Research Hub</title>
+  <meta name="description" content="Jak działa Global Burden of Disease: źródła danych, modelowanie, DALY, YLL i YLD, hierarchia przyczyn i czynników ryzyka, wagi niepełnosprawności, standaryzacja wiekowa. Słownik pojęć i linki.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <style>
+    .sub-h { margin-top: 0; }
+    .q-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+    .q-head .badge { flex-shrink: 0; }
+
+    /* Counterfactual */
+    .cf-bar { display: flex; height: 44px; border-radius: 8px; overflow: hidden; margin-top: 18px; font-size: .92rem; }
+    .cf-bar > div { display: flex; align-items: center; padding: 0 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cf-eq { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; margin: 14px 0 10px; }
+    .cf-eq .box { padding: 12px 20px; border-radius: 10px; font-size: 1.05rem; }
+    .cf-eq .op { font-size: 1.5rem; color: var(--ink-3); }
+    .cf-ex { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; text-align: center; margin-top: 22px; }
+    .cf-ex .k { font-size: .92rem; color: var(--ink-2); }
+    .cf-ex .v { font-size: 1.6rem; font-weight: 500; }
+    @media (max-width: 620px) { .cf-ex { grid-template-columns: 1fr; } }
+
+    /* Mediacja */
+    .med-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .med-scroll svg { min-width: 640px; }
+    .chain { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 14px 0; }
+    .chain .arr { color: var(--ink-3); }
+
+    /* Statystyki hierarchii */
+    .levels { display: flex; flex-wrap: wrap; gap: 14px 36px; align-items: baseline; }
+    .levels b { font-size: 2.2rem; font-weight: 500; margin-right: 6px; font-variant-numeric: tabular-nums; }
+
+    /* Wagi niepełnosprawności */
+    .dw-scale { height: 30px; border-radius: 15px; background: linear-gradient(90deg, #5ecba5 0%, #5ecba5 15%, var(--amber) 15%, var(--amber) 50%, var(--coral) 50%, var(--coral) 100%); }
+    .dw-ticks { display: flex; justify-content: space-between; font-size: .85rem; color: var(--ink-2); margin: 6px 0 18px; }
+    .dw-group { font-size: .95rem; color: var(--ink-2); margin: 18px 0 8px; }
+    .dw-row { display: grid; grid-template-columns: 52px 1fr 64px; gap: 16px; align-items: center; padding: 14px 20px; border-radius: 12px; margin-bottom: 10px; }
+    .dw-row .n { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; font-weight: 600; }
+    .dw-row h4 { margin: 0; font-weight: 500; }
+    .dw-row p { margin: 0; font-size: .92rem; }
+    .dw-row .track { height: 8px; margin-top: 8px; }
+    .dw-row .track i { display: block; height: 100%; border-radius: 4px; }
+    .dw-row .v { font-size: 1.45rem; text-align: right; font-variant-numeric: tabular-nums; }
+    .dw-mild { background: var(--inj-tint); color: var(--inj-dark); } .dw-mild .n, .dw-mild .track i { background: #5ecba5; }
+    .dw-mod { background: var(--amber-tint); color: var(--amber-dark); } .dw-mod .n, .dw-mod .track i { background: var(--amber); }
+    .dw-sev { background: var(--coral-tint); color: var(--coral-dark); } .dw-sev .n, .dw-sev .track i { background: var(--coral); } .dw-sev .n { color: #fff; }
+    @media (max-width: 520px) { .dw-row { grid-template-columns: 40px 1fr 48px; padding: 12px; gap: 10px; } .dw-row .n { width: 36px; height: 36px; } .dw-row .v { font-size: 1.15rem; } }
+
+    /* Piramidy */
+    .pyr { display: grid; gap: 4px; }
+    .pyr div { margin: 0 auto; height: 26px; border-radius: 5px; display: grid; place-items: center; font-size: .85rem; }
+    .pyr-title { text-align: center; font-weight: 500; margin-bottom: 12px; }
+    .rate-box { background: var(--sand); border-radius: 12px; text-align: center; padding: 16px; margin-top: 16px; }
+    .rate-box .k { font-size: .9rem; color: var(--ink-2); }
+    .rate-box .v { font-size: 1.9rem; font-weight: 500; font-variant-numeric: tabular-nums; }
+
+    /* Anatomia choroby */
+    .stage { position: relative; }
+    .stage .num { position: absolute; top: 18px; right: 18px; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 600; }
+    .stage h3 { padding-right: 48px; }
+    .subboxes { display: grid; gap: 10px; margin-top: 14px; }
+    .subboxes > div { border-radius: 10px; padding: 10px 12px; text-align: center; font-size: .95rem; }
+    .subboxes small { display: block; opacity: .85; }
+
+    /* Kalkulator DALY */
+    .calc-row { display: grid; grid-template-columns: 200px 1fr; gap: 12px; align-items: center; margin-bottom: 6px; }
+    .calc-row label { font-weight: 500; color: var(--ink-2); }
+    .calc-row output { font-variant-numeric: tabular-nums; font-weight: 600; }
+    .life { position: relative; display: flex; height: 50px; border-radius: 8px; font-size: .92rem; }
+    .life > div { display: flex; align-items: center; justify-content: center; overflow: hidden; white-space: nowrap; transition: width .25s; color: #fff; min-width: 0; }
+    .life .h { background: var(--inj); border-radius: 8px 0 0 8px; }
+    .life .d { background: var(--coral); }
+    .life .l { background: var(--ncd-tint); color: var(--ncd-dark); border: 1.5px dashed #6c9fd8; border-radius: 0 8px 8px 0; }
+    .life .death-mark { position: absolute; top: -6px; bottom: -22px; width: 2px; background: var(--cmnn-dark); color: var(--cmnn-dark); display: block; overflow: visible; transition: left .25s; }
+    .life .death-mark span { position: absolute; bottom: -2px; left: 6px; font-size: .8rem; }
+    .le-track { height: 34px; border: 1.5px dashed #c9c4b5; border-radius: 8px; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; color: var(--ink-3); font-size: .9rem; }
+    .daly-bar { display: flex; height: 40px; border-radius: 8px; overflow: hidden; }
+    .daly-bar > div { display: flex; align-items: center; justify-content: center; color: #fff; font-size: .9rem; transition: width .25s; overflow: hidden; white-space: nowrap; }
+    .calc-lbl { font-size: .95rem; color: var(--ink-2); margin: 18px 0 8px; }
+    @media (max-width: 620px) { .calc-row { grid-template-columns: 1fr; gap: 2px; margin-bottom: 12px; } }
+
+    /* Tabela Results Tool */
+    .rt th { cursor: help; }
+    .rt th.on, .rt td.on { background: var(--amber-tint) !important; }
+    .rt-help { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px 24px; margin-top: 16px; }
+    .rt-help div { padding: 8px 12px; border-radius: 8px; border: 1px solid transparent; }
+    .rt-help div.on { background: var(--amber-tint); border-color: #f4c87e; }
+    .rt-help code { font-family: var(--mono); font-weight: 600; color: var(--ncd-dark); }
+    @media (max-width: 700px) { .rt-help { grid-template-columns: 1fr; } }
+
+    /* Słownik */
+    .gl-letter { font-size: .8rem; font-weight: 700; letter-spacing: .1em; color: var(--ink-3); margin: 18px 0 6px; }
+    details.acc > summary small { font-weight: 400; color: var(--ink-3); }
+
+    /* Linki */
+    .link-card { display: flex; flex-direction: column; gap: 6px; text-decoration: none; color: inherit; }
+    .link-card:hover { border-color: var(--ncd-mid); box-shadow: var(--shadow); color: inherit; }
+    .link-card .url { font-family: var(--mono); font-size: .78rem; color: var(--ncd); word-break: break-all; }
+  </style>
+</head>
+<body>
+  <div data-site-header></div>
+
+  <main id="main">
+    <section class="page-hero">
+      <div class="container">
+        <div class="breadcrumbs"><a href="index.html">Start</a> / <a href="o-nas.html">O nas</a> / Metodologia</div>
+        <h1>Metodologia GBD</h1>
+        <p class="lead">Jak Global Burden of Disease zbiera dane, modeluje je i przelicza na porównywalne miary obciążenia chorobami — przystępnie, ale rzetelnie. Kluczowe miary, źródła danych, sposób modelowania i narzędzia do samodzielnej pracy z danymi.</p>
+        <nav class="toc" aria-label="Spis treści">
+          <a href="#podejscie">Podejście</a>
+          <a href="#pipeline">5 kroków</a>
+          <a href="#counterfactual">Counterfactual</a>
+          <a href="#mediacja">Wiele czynników</a>
+          <a href="#hierarchia-przyczyn">Hierarchia przyczyn</a>
+          <a href="#hierarchia-ryzyka">Hierarchia ryzyka</a>
+          <a href="#wagi">Wagi niepełnosprawności</a>
+          <a href="#standaryzacja">Standaryzacja</a>
+          <a href="#jedna-choroba">Jedna choroba</a>
+          <a href="#miary">DALY, YLL, YLD</a>
+          <a href="#kalkulator-daly">Kalkulator DALY</a>
+          <a href="#jak-korzystac">Jak korzystać z danych</a>
+          <a href="#slownik">Słownik</a>
+          <a href="#linki">Linki</a>
+        </nav>
+      </div>
+    </section>
+
+    <!-- Podejście + pipeline -->
+    <section class="section" id="podejscie">
+      <div class="container narrow">
+        <span class="eyebrow">2.3 · Metodologia</span>
+        <h2>Podejście metodologiczne</h2>
+        <div class="prose">
+          <p class="lead">GBD opiera się na systematycznej syntezie wszystkich dostępnych danych o zdrowiu populacji — od rejestrów zgonów i systemów nadzoru epidemiologicznego, przez badania kohortowe i przekrojowe, po dane szpitalne i rejestry nowotworów. Zebrane dane są harmonizowane i przetwarzane za pomocą zaawansowanych modeli statystycznych, w tym narzędzia DisMod-MR, które pozwala szacować częstość występowania, zapadalność i czas trwania chorób nawet w sytuacji niekompletnych danych źródłowych.</p>
+        </div>
+
+        <div id="pipeline" class="anchor-sub">
+          <h3>Jak zbiera się dane i przeprowadza analizy?</h3>
+          <p class="muted">Pipeline w 5 krokach — od zbierania 250 000 źródeł danych, przez korekty i modelowanie, po gotowe szacunki.</p>
+          <ol class="steps mt-2">
+            <li>
+              <h4>Zbieranie danych</h4>
+              <p>GBD gromadzi wszystkie dostępne dane o zdrowiu populacji z każdego kraju — rejestry, badania, systemy nadzoru. Dla jednej edycji GBD przetwarzanych jest ponad 250 000 źródeł danych.</p>
+              <div class="pills">
+                <span class="pill blue">Rejestry zgonów</span><span class="pill blue">Rejestry nowotworów</span>
+                <span class="pill coral">Badania kohortowe</span><span class="pill coral">Badania przekrojowe</span>
+                <span class="pill green">Dane szpitalne</span><span class="pill green">Systemy nadzoru</span>
+                <span class="pill">Dane satelitarne</span><span class="pill">Dane administracyjne</span>
+              </div>
+            </li>
+            <li data-tone="coral">
+              <h4>Korekta i harmonizacja</h4>
+              <p>Surowe dane są oczyszczane, standaryzowane i korygowane o znane błędy: niekompletne rejestrowanie zgonów, błędne kodowanie przyczyn (tzw. garbage codes), różnice w definicjach diagnostycznych między krajami. Celem jest porównywalność danych z 204 krajów.</p>
+              <div class="pills">
+                <span class="pill amber">Redystrybucja garbage codes</span><span class="pill amber">Korekta niekompletności</span><span class="pill amber">Standaryzacja definicji</span>
+              </div>
+            </li>
+            <li data-tone="green">
+              <h4>Modelowanie statystyczne</h4>
+              <p>Skorygowane dane trafiają do modeli statystycznych, które szacują wskaźniki zdrowotne nawet tam, gdzie dane źródłowe są niekompletne. Kluczowe narzędzie to DisMod-MR — bayesowski model meta-regresyjny, który zapewnia wewnętrzną spójność szacunków.</p>
+              <div class="pills">
+                <span class="pill green">DisMod-MR</span><span class="pill green">CODEm (przyczyny zgonów)</span><span class="pill green">Spatiotemporal GPR</span><span class="pill green">CoDCorrect (spójność)</span>
+              </div>
+            </li>
+            <li data-tone="purple">
+              <h4>Szacunki i przedziały niepewności</h4>
+              <p>Modele generują szacunki punktowe z 95% przedziałami niepewności — dla każdej choroby, każdego czynnika ryzyka, każdego kraju, każdego roku, każdej grupy wiekowej i płci. Szerokość przedziału mówi, jak pewni jesteśmy danego wyniku.</p>
+              <div class="pills">
+                <span class="pill">371 chorób i urazów</span><span class="pill">88 czynników ryzyka</span><span class="pill">204 kraje i terytoria</span><span class="pill">1990–dziś</span>
+              </div>
+            </li>
+            <li>
+              <h4>Wyniki i zastosowania</h4>
+              <p>Finalne szacunki GBD są publicznie dostępne i służą trzem celom: identyfikacji priorytetów zdrowotnych, monitorowaniu trendów w czasie oraz porównywaniu krajów i regionów. Dane wykorzystują rządy, WHO, badacze i media na całym świecie.</p>
+              <div class="pills">
+                <span class="pill blue">Umieralność i przyczyny zgonów</span><span class="pill coral">DALY, YLL, YLD</span><span class="pill purple">Atrybucja czynników ryzyka</span><span class="pill amber">Projekcje i scenariusze</span>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- Counterfactual -->
+    <section class="section alt" id="counterfactual">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Atrybucja ryzyka</span>
+          <h2>Counterfactual scenarios — jak GBD przypisuje obciążenie do czynników ryzyka?</h2>
+        </div>
+        <div class="grid g2">
+          <div class="tone tone-coral">
+            <span class="eyebrow" style="color:inherit">Świat rzeczywisty</span>
+            <h3>Aktualna ekspozycja na czynnik ryzyka</h3>
+            <p>Populacja jest narażona na czynnik ryzyka na aktualnym poziomie — np. 23% dorosłych pali tytoń.</p>
+            <div class="cf-bar" aria-label="Całkowite obciążenie: 100%">
+              <div style="width:100%;background:var(--coral);color:#fff">Całkowite obciążenie chorobą (DALY) — 100%</div>
+            </div>
+          </div>
+          <div class="tone tone-blue">
+            <span class="eyebrow" style="color:inherit">Scenariusz hipotetyczny (counterfactual)</span>
+            <h3>Minimalna teoretyczna ekspozycja (TMREL)</h3>
+            <p>Hipotetyczny świat, w którym ekspozycja na czynnik ryzyka jest na najniższym możliwym poziomie — np. 0% palaczy.</p>
+            <div class="cf-bar" aria-label="Pozostałe obciążenie około 20%, przypisywalne około 80%">
+              <div style="width:22%;background:var(--ncd);color:#fff" title="Pozostałe obciążenie">~20%</div>
+              <div style="width:78%;background:var(--amber-tint);color:var(--amber-dark);border:1.5px dashed var(--amber);border-left:0;border-radius:0 8px 8px 0">znika → obciążenie przypisywalne</div>
+            </div>
+            <p class="small mt-1 mb-0" style="color:var(--ncd-dark)"><span style="display:inline-block;width:10px;height:10px;background:var(--ncd);border-radius:2px"></span> pozostałe obciążenie (inne przyczyny raka płuca)</p>
+          </div>
+        </div>
+
+        <div class="tone tone-sand no-border mt-2 center">
+          <h3>Obciążenie przypisywalne czynnikowi ryzyka</h3>
+          <div class="cf-eq">
+            <span class="box" style="background:var(--coral-tint);color:var(--coral-dark)">Obciążenie rzeczywiste</span>
+            <span class="op">−</span>
+            <span class="box" style="background:var(--ncd-tint);color:var(--ncd-dark)">Obciążenie hipotetyczne</span>
+            <span class="op">=</span>
+            <span class="box" style="background:var(--amber-tint);color:var(--amber-dark);border:1.5px solid var(--amber)">Obciążenie przypisywalne</span>
+          </div>
+          <p>Różnica między obciążeniem w świecie rzeczywistym a obciążeniem w scenariuszu bez czynnika ryzyka<br>to ta część DALY, którą można przypisać temu czynnikowi.</p>
+          <div class="cf-ex">
+            <div><div class="k">Przykład: palenie tytoniu</div><div class="v" style="color:var(--coral)">100% DALY z raka płuca</div></div>
+            <div><div class="k">Gdyby nikt nie palił (TMREL)</div><div class="v" style="color:var(--ncd)">~20% DALY</div></div>
+            <div><div class="k">Wniosek</div><div class="v" style="color:#b77712">~80% przypisywalne</div></div>
+          </div>
+          <p class="sample-note mt-2 mb-0">Wartości przykładowe — ilustracja koncepcji.</p>
+        </div>
+        <p class="muted mt-1">Uwaga: obciążenie przypisywalne różnym czynnikom ryzyka może się sumować do ponad 100%, ponieważ jedna choroba może być współzwiązana z wieloma czynnikami ryzyka jednocześnie (np. rak płuca — palenie + zanieczyszczenie powietrza + ekspozycja zawodowa). GBD stosuje podejście mediacyjne, aby uniknąć podwójnego liczenia na poziomie zagregowanym.</p>
+      </div>
+    </section>
+
+    <!-- Mediacja -->
+    <section class="section" id="mediacja">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Framework mediacyjny</span>
+          <h2>Jak rozwiązane jest powiązanie z wieloma czynnikami?</h2>
+        </div>
+        <div class="card">
+          <div class="med-scroll">
+            <svg viewBox="0 0 900 372" role="img" aria-labelledby="med-t med-d">
+              <title id="med-t">Ścieżki przyczynowe: czynniki behawioralne, metaboliczne i choroby</title>
+              <desc id="med-d">Czynniki behawioralne wpływają na choroby pośrednio przez czynniki metaboliczne (linie ciągłe) oraz bezpośrednio (linie przerywane).</desc>
+              <defs>
+                <marker id="ah-c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#d85a30"/></marker>
+                <marker id="ah-p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#534ab7"/></marker>
+              </defs>
+              <g font-family="Source Sans 3, Segoe UI, sans-serif" font-size="13" fill="#444b55" letter-spacing="1">
+                <text x="120" y="18" text-anchor="middle">CZYNNIKI BEHAWIORALNE</text>
+                <text x="450" y="18" text-anchor="middle">CZYNNIKI METABOLICZNE</text>
+                <text x="780" y="18" text-anchor="middle">CHOROBY (OUTCOMES)</text>
+              </g>
+              <!-- Ścieżki bezpośrednie (przerywane) — pod kolumną środkową -->
+              <g fill="none" stroke="#d85a30" stroke-width="1.8" stroke-dasharray="6 5" opacity=".75">
+                <path d="M240,206 C300,350 600,350 660,72" marker-end="url(#ah-c)"/>
+                <path d="M240,276 C300,360 600,360 660,282" marker-end="url(#ah-c)"/>
+                <path d="M240,66 C290,345 610,345 660,288" marker-end="url(#ah-c)"/>
+              </g>
+              <!-- Ścieżki pośrednie: behawioralne → metaboliczne -->
+              <g fill="none" stroke="#d85a30" stroke-width="2">
+                <path d="M240,62 C285,62 285,62 330,62" marker-end="url(#ah-c)"/>
+                <path d="M240,70 C285,70 285,132 330,132" marker-end="url(#ah-c)"/>
+                <path d="M240,136 C285,136 285,70 330,70" marker-end="url(#ah-c)"/>
+                <path d="M240,140 C285,140 285,202 330,202" marker-end="url(#ah-c)"/>
+                <path d="M240,272 C285,272 285,140 330,140" marker-end="url(#ah-c)"/>
+              </g>
+              <!-- Ścieżki pośrednie: metaboliczne → choroby -->
+              <g fill="none" stroke="#534ab7" stroke-width="2">
+                <path d="M570,62 C615,62 615,206 660,206" marker-end="url(#ah-p)"/>
+                <path d="M570,132 C615,132 615,62 660,62" marker-end="url(#ah-p)"/>
+                <path d="M570,140 C615,140 615,136 660,136" marker-end="url(#ah-p)"/>
+                <path d="M570,206 C615,206 615,212 660,212" marker-end="url(#ah-p)"/>
+                <path d="M570,276 C615,276 615,70 660,70" marker-end="url(#ah-p)"/>
+              </g>
+              <!-- Kolumny -->
+              <g font-family="Source Sans 3, Segoe UI, sans-serif" font-size="16" text-anchor="middle">
+                <g fill="#f9ebe5"><rect x="0" y="40" width="240" height="52" rx="10"/><rect x="0" y="110" width="240" height="52" rx="10"/><rect x="0" y="180" width="240" height="52" rx="10"/><rect x="0" y="250" width="240" height="52" rx="10"/></g>
+                <g fill="#993c1d"><text x="120" y="71">Dieta</text><text x="120" y="141">Niska aktywność fizyczna</text><text x="120" y="211">Palenie tytoniu</text><text x="120" y="281">Spożycie alkoholu</text></g>
+                <g fill="#edebfb"><rect x="330" y="40" width="240" height="52" rx="10"/><rect x="330" y="110" width="240" height="52" rx="10"/><rect x="330" y="180" width="240" height="52" rx="10"/><rect x="330" y="250" width="240" height="52" rx="10"/></g>
+                <g fill="#3c3489"><text x="450" y="71">Wysoki BMI</text><text x="450" y="141">Wysokie ciśnienie</text><text x="450" y="211">Wysoka glikemia</text><text x="450" y="281">Wysoki cholesterol</text></g>
+                <g fill="#e6f0fa"><rect x="660" y="40" width="240" height="52" rx="10"/><rect x="660" y="110" width="240" height="52" rx="10"/><rect x="660" y="180" width="240" height="52" rx="10"/><rect x="660" y="250" width="240" height="52" rx="10"/></g>
+                <g fill="#0c447c"><text x="780" y="71">Ch. niedokrwienna serca</text><text x="780" y="141">Udar mózgu</text><text x="780" y="211">Cukrzyca typu 2</text><text x="780" y="281">Rak jelita grubego</text></g>
+              </g>
+            </svg>
+          </div>
+          <div class="legend" style="justify-content:center">
+            <span><svg width="34" height="10" aria-hidden="true"><line x1="0" y1="5" x2="34" y2="5" stroke="#534ab7" stroke-width="2.5"/></svg> Linie ciągłe = ścieżki pośrednie (przez czynniki metaboliczne)</span>
+            <span><svg width="34" height="10" aria-hidden="true"><line x1="0" y1="5" x2="34" y2="5" stroke="#d85a30" stroke-width="2" stroke-dasharray="6 4"/></svg> Linie przerywane = ścieżki bezpośrednie</span>
+          </div>
+        </div>
+
+        <div class="grid g2 mt-2" style="align-items:start">
+          <div class="tone tone-sand no-border">
+            <h3>Problem: ta sama choroba, wiele ścieżek</h3>
+            <p>Udar mózgu może być efektem wielu łańcuchów przyczynowych jednocześnie. Jeden pacjent może palić, mieć nadciśnienie spowodowane dietą i niską aktywność fizyczną. Jak policzyć obciążenie bez podwójnego liczenia?</p>
+            <div class="chain"><span class="pill coral">Dieta</span><span class="arr">→</span><span class="pill purple">Wysoki BMI</span><span class="arr">→</span><span class="pill purple">Wysokie ciśnienie</span><span class="arr">→</span><span class="pill blue">Udar</span></div>
+            <p>W tym łańcuchu trzy czynniki ryzyka (dieta, BMI, ciśnienie) prowadzą do jednego zdarzenia. Jeśli policzymy obciążenie osobno dla każdego — udar zostanie policzony trzykrotnie.</p>
+          </div>
+          <div class="tone tone-green">
+            <h3>Rozwiązanie GBD: framework mediacyjny</h3>
+            <p>GBD stosuje podejście mediacyjne, które rozdziela ścieżki bezpośrednie od pośrednich:</p>
+            <p>Obciążenie przypisane diecie obejmuje zarówno jej bezpośredni wpływ na choroby (np. sód → udar), jak i wpływ pośredni — przez BMI i ciśnienie. Ale ta część pośrednia jest już „wbudowana" w szacunek diety, więc nie jest liczona ponownie przy BMI.</p>
+            <p>Obciążenie przypisane ciśnieniu obejmuje tylko tę część, która nie wynika z czynników „wyżej na ścieżce" (dieta, BMI) — a więc np. ciśnienie o podłożu genetycznym lub wynikające z innych przyczyn.</p>
+            <p>Dzięki temu suma obciążeń na poziomie poszczególnych czynników ryzyka może przekraczać 100% (bo ścieżki się krzyżują), ale na poziomie zagregowanym (wszystkie czynniki łącznie) nie ma podwójnego liczenia.</p>
+          </div>
+        </div>
+        <p class="muted mt-1">To podejście GBD wdrożyło od edycji 2019, zastępując wcześniejszy model Comparative Risk Assessment. Framework mediacyjny opiera się na sieci przyczynowej (directed acyclic graph), która definiuje, które czynniki ryzyka leżą „powyżej" których na ścieżce przyczynowej.</p>
+      </div>
+    </section>
+
+    <!-- Hierarchia przyczyn -->
+    <section class="section alt" id="hierarchia-przyczyn">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Struktura danych</span>
+          <h2>Hierarchia przyczyn GBD</h2>
+          <p>Fundamentalna struktura organizacji wiedzy — od trzech szerokich kategorii do setek konkretnych chorób. Kliknij kategorię, a potem grupę, aby zobaczyć przykłady konkretnych chorób.</p>
+        </div>
+        <div class="legend">
+          <span><i style="background:var(--cmnn)"></i>Grupa I — choroby zakaźne, matczyne, noworodkowe i żywieniowe</span>
+          <span><i style="background:var(--ncd)"></i>Grupa II — choroby niezakaźne</span>
+          <span><i style="background:var(--inj)"></i>Grupa III — urazy</span>
+        </div>
+        <div id="cause-tree"></div>
+        <div class="tone tone-sand no-border mt-2">
+          <div class="levels">
+            <span><b>4</b>poziomy hierarchii</span>
+            <span><b>3</b>kategorie poziomu 1</span>
+            <span><b>22</b>grupy poziomu 2</span>
+            <span><b>371</b>przyczyn poziomu 3–4</span>
+          </div>
+          <p class="small mt-1">Na poziomie 3–4 pokazujemy wybrane przykłady. Pełna lista przyczyn: GBD Protocol and Appendices.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hierarchia czynników ryzyka -->
+    <section class="section" id="hierarchia-ryzyka">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Struktura danych</span>
+          <h2>Hierarchia czynników ryzyka</h2>
+          <p>Drugi filar analiz GBD obok przyczyn chorób: trzy kategorie poziomu 1, w nich grupy czynników (poziom 2) i konkretne ekspozycje (poziom 3–4) — często definiowane jako ekspozycja ciągła względem poziomu TMREL.</p>
+        </div>
+        <div class="legend">
+          <span><i style="background:var(--coral)"></i>Behawioralne — styl życia, nawyki</span>
+          <span><i style="background:var(--purple)"></i>Metaboliczne — czynniki biologiczne</span>
+          <span><i style="background:#b9b4a6"></i>Środowiskowe i zawodowe — otoczenie, ekspozycje</span>
+        </div>
+        <div id="risk-tree"></div>
+      </div>
+    </section>
+
+    <!-- Wagi niepełnosprawności -->
+    <section class="section alt" id="wagi">
+      <div class="container narrow">
+        <div class="section-head">
+          <span class="eyebrow">YLD</span>
+          <h2>Co to są wagi niepełnosprawności?</h2>
+        </div>
+        <div class="dw-scale" role="img" aria-label="Skala od 0 (pełne zdrowie) do 1 (odpowiednik zgonu)"></div>
+        <div class="dw-ticks"><span>0.00 — pełne zdrowie</span><span>0.50</span><span>1.00 — odpowiednik zgonu</span></div>
+        <div id="dw-list"></div>
+        <div class="tone tone-sand no-border mt-2">
+          <p>Wagi niepełnosprawności (disability weights) ustalane są na podstawie międzynarodowych badań ankietowych, w których respondenci porównują parami różne stany zdrowotne. Każda waga wyrażona jest na skali od 0 (pełne zdrowie) do 1 (równoważnik zgonu). Wagi nie są wartościowaniem — opisują stopień ograniczenia funkcjonalnego, nie wartość życia osoby z danym stanem.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Standaryzacja -->
+    <section class="section" id="standaryzacja">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Porównywalność</span>
+          <h2>Jak działa standaryzacja do wieku?</h2>
+        </div>
+        <div class="tone tone-red">
+          <h3>Problem: surowe wskaźniki wprowadzają w błąd</h3>
+          <p>Kraj A ma surowy wskaźnik zgonów 12/1000, Kraj B — 8/1000. Czy Kraj A jest zdrowszy? Niekoniecznie. Jeśli Kraj A ma starszą populację, więcej zgonów jest naturalną konsekwencją struktury wiekowej — nie gorszego systemu zdrowia.</p>
+        </div>
+        <div class="split-vs mt-2">
+          <div>
+            <div class="pyr-title">Kraj A — starsza populacja</div>
+            <div class="pyr" id="pyr-a"></div>
+            <div class="rate-box"><div class="k">Surowy wskaźnik</div><div class="v" style="color:var(--cmnn)">12 / 1000</div></div>
+          </div>
+          <div class="vs">vs</div>
+          <div>
+            <div class="pyr-title">Kraj B — młodsza populacja</div>
+            <div class="pyr" id="pyr-b"></div>
+            <div class="rate-box"><div class="k">Surowy wskaźnik</div><div class="v" style="color:var(--cmnn)">8 / 1000</div></div>
+          </div>
+        </div>
+
+        <div class="tone tone-green mt-2">
+          <h3>Rozwiązanie: standaryzacja wiekowa</h3>
+          <p>GBD stosuje standardową populację referencyjną. Wskaźniki z każdej grupy wiekowej są ważone tą samą strukturą wiekową — dzięki czemu porównujemy „jabłka z jabłkami".</p>
+        </div>
+        <ol class="steps compact mt-2">
+          <li><h4>Oblicz wskaźniki wiekowe</h4><p>Dla każdego kraju osobno: ile zgonów / ile DALY w każdej grupie wiekowej (np. 0–4, 5–9, … 80+).</p></li>
+          <li data-tone="amber"><h4>Zastosuj populację standardową</h4><p>Pomnóż wskaźnik wiekowy każdego kraju przez ten sam zestaw wag — standardową strukturę wiekową GBD. Niezależnie od tego, ile osób faktycznie ma dany kraj w danej grupie wiekowej.</p></li>
+          <li data-tone="green"><h4>Zsumuj</h4><p>Wynikiem jest standaryzowany wskaźnik — porównywalny między krajami, regionami i latami, bo różnice w strukturze wiekowej zostały usunięte.</p></li>
+        </ol>
+        <div class="grid g2 mt-1">
+          <div class="rate-box" style="border:1px solid var(--line)"><div class="k">Kraj A — po standaryzacji</div><div class="v" style="color:var(--ncd)">7,2 / 1000</div></div>
+          <div class="rate-box" style="border:1px solid var(--line)"><div class="k">Kraj B — po standaryzacji</div><div class="v" style="color:var(--cmnn)">9,1 / 1000</div></div>
+        </div>
+        <p class="center mt-2 mb-0"><strong style="font-weight:500">Po standaryzacji obraz się odwraca — Kraj B ma wyższe ryzyko zgonu w każdej grupie wiekowej.</strong></p>
+        <p class="sample-note center">Wartości przykładowe — ilustracja koncepcji.</p>
+      </div>
+    </section>
+
+    <!-- Jedna choroba -->
+    <section class="section alt" id="jedna-choroba">
+      <div class="container narrow">
+        <div class="section-head">
+          <span class="eyebrow">Od danych do DALY</span>
+          <h2>Jak GBD widzi jedną chorobę?</h2>
+          <p class="muted">Anatomia jednej choroby w GBD: cukrzyca typu 2.</p>
+        </div>
+
+        <div class="tone tone-blue stage">
+          <span class="num" style="background:var(--ncd)">1</span>
+          <h3>Zapadalność (incidence)</h3>
+          <p>Ile nowych przypadków cukrzycy typu 2 rozpoznano w Polsce w 2021? GBD szacuje na podstawie danych z badań populacyjnych, rejestrów, danych szpitalnych i ubezpieczeniowych.</p>
+        </div>
+        <div class="flow-arrow" aria-hidden="true">↓</div>
+        <div class="tone tone-purple stage">
+          <span class="num" style="background:var(--purple)">2</span>
+          <h3>Chorobowość (prevalence)</h3>
+          <p>Ile osób żyje z cukrzycą typu 2 w danym momencie? DisMod-MR modeluje przepływ: nowe zachorowania wchodzą, część osób umiera, część (rzadko) remituje. Prevalence = „aktualna pula chorych".</p>
+        </div>
+        <div class="flow-arrow" aria-hidden="true">↓</div>
+        <div class="tone tone-amber stage">
+          <span class="num" style="background:#b77712">3</span>
+          <h3>Następstwa (sequelae)</h3>
+          <p>Cukrzyca nie jest jednym stanem — GBD dzieli ją na następstwa, każde z własną wagą niepełnosprawności:</p>
+          <div class="subboxes g5" style="display:grid">
+            <div style="background:var(--amber-mid)">Bez powikłań<small>Waga: 0.049</small></div>
+            <div style="background:var(--amber-mid)">Neuropatia<small>Waga: 0.133</small></div>
+            <div style="background:var(--amber-mid)">Retinopatia<small>Waga: 0.033–0.552</small></div>
+            <div style="background:var(--amber-mid)">Amputacja<small>Waga: 0.130–0.164</small></div>
+            <div style="background:var(--amber-mid)">Choroba nerek<small>Waga: 0.049–0.571</small></div>
+          </div>
+        </div>
+        <div class="flow-arrow" aria-hidden="true">↓</div>
+        <div class="tone tone-coral stage">
+          <span class="num" style="background:var(--coral)">4</span>
+          <h3>Obliczenie DALY</h3>
+          <p>GBD łączy dwa składniki: lata utracone z powodu przedwczesnych zgonów na cukrzycę (YLL) i lata przeżyte z następstwami cukrzycy ważone wagami niepełnosprawności (YLD).</p>
+          <div class="subboxes g2" style="display:grid">
+            <div style="background:var(--ncd-tint);color:var(--ncd-dark);padding:14px"><small>YLL (przedwczesne zgony)</small><span style="font-size:1.3rem">Zgony × utracone lata</span></div>
+            <div style="background:var(--coral-mid);color:var(--coral-dark);padding:14px"><small>YLD (niepełnosprawność)</small><span style="font-size:1.3rem">Chorobowość × waga × czas</span></div>
+          </div>
+        </div>
+        <div class="flow-arrow" aria-hidden="true">↓</div>
+        <div class="tone tone-sand stage">
+          <span class="num" style="background:var(--ink-2)">5</span>
+          <h3>Atrybucja czynników ryzyka</h3>
+          <p>Na koniec GBD odpowiada: jaka część DALY z cukrzycy jest przypisywalna konkretnym czynnikom ryzyka?</p>
+          <div class="subboxes g4" style="display:grid">
+            <div style="background:var(--purple-tint);color:var(--purple-dark)">Wysoki BMI<small>Największy udział</small></div>
+            <div style="background:var(--coral-tint);color:var(--coral-dark)">Dieta<small>Ścieżka pośrednia</small></div>
+            <div style="background:var(--coral-tint);color:var(--coral-dark)">Niska aktywność<small>Bezpośrednia i pośrednia</small></div>
+            <div style="background:var(--purple-tint);color:var(--purple-dark)">Wysoka glikemia<small>Czynnik metaboliczny</small></div>
+          </div>
+        </div>
+        <p class="muted mt-2">Ten sam proces GBD stosuje dla każdej z 371 analizowanych chorób i urazów — od choroby niedokrwiennej serca po depresję i wypadki drogowe. Każda choroba ma własną strukturę sequelae, wagi niepełnosprawności i ścieżki atrybucji ryzyka.</p>
+      </div>
+    </section>
+
+    <!-- Miary -->
+    <section class="section" id="miary">
+      <div class="container narrow">
+        <div class="section-head">
+          <span class="eyebrow">Kluczowe miary</span>
+          <h2>Główne miary stosowane w GBD</h2>
+        </div>
+        <div class="grid g3">
+          <div class="tone tone-sand"><h3>DALY</h3><p><strong>Disability-Adjusted Life Years</strong> — lata życia utracone z powodu przedwczesnej śmierci i niepełnosprawności. Jedna jednostka DALY odpowiada jednemu utraconemu rokowi życia w pełnym zdrowiu.</p></div>
+          <div class="tone tone-blue"><h3>YLL</h3><p><strong>Years of Life Lost</strong> — lata życia utracone z powodu przedwczesnych zgonów, liczone jako różnica między wiekiem zgonu a oczekiwaną długością życia.</p></div>
+          <div class="tone tone-coral"><h3>YLD</h3><p><strong>Years Lived with Disability</strong> — lata przeżyte z niepełnosprawnością, ważone współczynnikiem ciężkości danego stanu zdrowotnego.</p></div>
+        </div>
+        <div class="cf-eq mt-2" style="font-size:1.3rem">
+          <span class="box" style="background:var(--sand);font-weight:600">DALY</span><span class="op">=</span>
+          <span class="box" style="background:var(--ncd-tint);color:var(--ncd-dark);font-weight:600">YLL</span><span class="op">+</span>
+          <span class="box" style="background:var(--coral-tint);color:var(--coral-dark);font-weight:600">YLD</span>
+        </div>
+        <p class="center">Ta prosta formuła pozwala uchwycić pełne obciążenie chorobą — nie tylko śmiertelność, ale i wpływ chorób przewlekłych, zaburzeń psychicznych czy bólu, które nie zabijają, ale obniżają jakość życia.</p>
+      </div>
+    </section>
+
+    <!-- Kalkulator DALY -->
+    <section class="section alt" id="kalkulator-daly">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Interaktywnie</span>
+          <h2>Jak liczymy DALY?</h2>
+          <p>Przesuń suwaki, aby zobaczyć, jak wiek zachorowania, wiek zgonu i waga niepełnosprawności wpływają na obciążenie chorobą jednej osoby.</p>
+        </div>
+        <div class="card">
+          <div class="calc-lbl" style="margin-top:0">Oczekiwana długość życia (standard GBD)</div>
+          <div class="le-track">86,6 lat</div>
+
+          <div class="calc-lbl">Rzeczywiste życie tej osoby</div>
+          <div class="life" id="life" aria-hidden="true">
+            <div class="h" id="seg-h">Lata w zdrowiu</div>
+            <div class="d" id="seg-d">Lata z chorobą</div>
+            <div class="l" id="seg-l">YLL — lata utracone</div>
+            <div class="death-mark" id="death-mark"><span>Zgon</span></div>
+          </div>
+
+          <div class="calc-lbl" style="margin-top:34px">Obciążenie chorobą (DALY) dla tej osoby</div>
+          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+            <div style="flex:1;min-width:240px"><div class="daly-bar" id="daly-bar" aria-hidden="true">
+              <div id="bar-yld" style="background:var(--coral)">YLD</div>
+              <div id="bar-yll" style="background:var(--ncd)">YLL</div>
+            </div></div>
+            <div style="font-size:1.3rem;font-weight:500">= <span id="daly-eq">33,3</span> DALY</div>
+          </div>
+
+          <div class="legend mt-2">
+            <span><i style="background:var(--inj)"></i>Lata w pełnym zdrowiu</span>
+            <span><i style="background:var(--coral)"></i>YLD — lata z niepełnosprawnością (ważone)</span>
+            <span><i style="background:var(--ncd)"></i>YLL — utracone lata życia</span>
+          </div>
+
+          <div class="mt-2">
+            <div class="calc-row"><label for="r-onset">Wiek zachorowania</label>
+              <div style="display:flex;gap:14px;align-items:center"><input type="range" id="r-onset" min="0" max="85" step="1" value="19"><output for="r-onset" id="o-onset" style="min-width:56px;text-align:right">19 lat</output></div></div>
+            <div class="calc-row"><label for="r-death">Wiek zgonu</label>
+              <div style="display:flex;gap:14px;align-items:center"><input type="range" id="r-death" min="1" max="86" step="1" value="68"><output for="r-death" id="o-death" style="min-width:56px;text-align:right">68 lat</output></div></div>
+            <div class="calc-row"><label for="r-weight">Waga niepełnosprawności</label>
+              <div style="display:flex;gap:14px;align-items:center"><input type="range" id="r-weight" min="0" max="1" step="0.01" value="0.30"><output for="r-weight" id="o-weight" style="min-width:56px;text-align:right">0,30</output></div></div>
+          </div>
+
+          <div class="grid g3 mt-2" aria-live="polite">
+            <div class="kpi"><div class="k-label">YLL (utracone lata)</div><div class="k-value" style="color:var(--ncd)" id="k-yll">18,6</div></div>
+            <div class="kpi"><div class="k-label">YLD (niepełnosprawność)</div><div class="k-value" style="color:var(--coral)" id="k-yld">14,7</div></div>
+            <div class="kpi"><div class="k-label">DALY (łączne obciążenie)</div><div class="k-value" id="k-daly">33,3</div></div>
+          </div>
+          <p class="small muted mt-1 mb-0">YLL = 86,6 − wiek zgonu · YLD = (wiek zgonu − wiek zachorowania) × waga. Waga niepełnosprawności: 0 = pełne zdrowie, 1 = odpowiednik zgonu. Np. umiarkowana depresja ≈ 0,40, cukrzyca bez powikłań ≈ 0,05, paraplegia ≈ 0,57. Model uproszczony: jedna osoba, stała waga, bez dyskontowania.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2.3.1 Jak korzystać -->
+    <section class="section" id="jak-korzystac">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">2.3.1 · Przewodnik praktyczny</span>
+          <h2>Jak korzystać z danych GBD</h2>
+          <p>Dane GBD są publicznie dostępne na platformach prowadzonych przez IHME. Dwa podstawowe narzędzia to:</p>
+        </div>
+        <div class="grid g2">
+          <a class="card link-card" href="https://vizhub.healthdata.org/gbd-results/" rel="noopener" target="_blank">
+            <span class="badge" style="align-self:start;background:var(--ncd-tint);color:var(--ncd-dark)">Dane tabelaryczne · CSV</span>
+            <h3>GBD Results Tool ↗</h3>
+            <p>Pozwala generować tabelaryczne zestawienia wyników GBD: śmiertelność, DALY, YLL, YLD, częstość występowania — w podziale na kraje, lata, choroby, czynniki ryzyka, wiek i płeć. Dane można pobrać w formacie CSV.</p>
+            <span class="url">vizhub.healthdata.org/gbd-results/</span>
+          </a>
+          <a class="card link-card" href="https://vizhub.healthdata.org/gbd-compare/" rel="noopener" target="_blank">
+            <span class="badge" style="align-self:start;background:var(--inj-tint);color:var(--inj-dark)">Wizualizacje</span>
+            <h3>GBD Compare ↗</h3>
+            <p>Interaktywne narzędzie wizualizacyjne, które pozwala porównywać kraje, choroby i czynniki ryzyka na mapach, wykresach i diagramach.</p>
+            <span class="url">vizhub.healthdata.org/gbd-compare/</span>
+          </a>
+        </div>
+
+        <div class="grid g2 mt-2" style="align-items:start">
+          <div class="tone tone-amber">
+            <h3>Przedziały niepewności (95% UI)</h3>
+            <p>Przy korzystaniu z danych GBD warto pamiętać, że każdy szacunek jest opatrzony 95-procentowym przedziałem niepewności (uncertainty interval, UI). Przedział ten nie jest błędem statystycznym w klasycznym sensie — odzwierciedla niepewność wynikającą z jakości i dostępności danych źródłowych oraz z procesu modelowania. Im szerszy przedział, tym ostrożniej należy interpretować wynik punktowy.</p>
+          </div>
+          <div class="tone tone-coral">
+            <h3>Narzędzie dla Polski w podziale wojewódzkim</h3>
+            <p>Dashboard GBD Research Hub pokazuje zgony, DALY i czynniki ryzyka dla Polski ogółem i 16 województw — z wyborem wskaźnika, roku, grupy wiekowej i płci.</p>
+            <a class="btn btn-coral mt-1" href="polska.html#dashboard">Otwórz dashboard →</a>
+          </div>
+        </div>
+
+        <div class="anchor-sub" id="tabela-results-tool">
+          <h3>Jak czytać tabelę z GBD Results Tool?</h3>
+          <p class="muted">Przykładowy wiersz pobranego pliku CSV. Najedź lub kliknij nagłówek kolumny, aby zobaczyć, co oznacza.</p>
+          <div class="table-wrap">
+            <table class="data rt" id="rt-table">
+              <thead><tr>
+                <th data-col="measure">measure</th><th data-col="location">location</th><th data-col="sex">sex</th><th data-col="age">age</th><th data-col="cause">cause</th><th data-col="metric">metric</th><th data-col="year" class="num">year</th><th data-col="val" class="num">val</th><th data-col="upper" class="num">upper</th><th data-col="lower" class="num">lower</th>
+              </tr></thead>
+              <tbody>
+                <tr><td data-col="measure">DALYs (Disability-Adjusted Life Years)</td><td data-col="location">Poland</td><td data-col="sex">Both</td><td data-col="age">Age-standardized</td><td data-col="cause">Ischemic heart disease</td><td data-col="metric">Rate</td><td data-col="year" class="num">2021</td><td data-col="val" class="num">2850.4</td><td data-col="upper" class="num">3120.7</td><td data-col="lower" class="num">2590.2</td></tr>
+                <tr><td data-col="measure">Deaths</td><td data-col="location">Poland</td><td data-col="sex">Female</td><td data-col="age">All ages</td><td data-col="cause">Stroke</td><td data-col="metric">Number</td><td data-col="year" class="num">2021</td><td data-col="val" class="num">17 402</td><td data-col="upper" class="num">19 950</td><td data-col="lower" class="num">14 880</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="sample-note mt-1">Wartości przykładowe — ilustracja struktury pliku.</p>
+          <div class="rt-help" id="rt-help">
+            <div data-col="measure"><code>measure</code> — miara: Deaths, DALYs, YLLs, YLDs, Prevalence, Incidence.</div>
+            <div data-col="location"><code>location</code> — lokalizacja: kraj, region GBD lub jednostka subnarodowa.</div>
+            <div data-col="sex"><code>sex</code> — płeć: Male, Female lub Both (obie łącznie).</div>
+            <div data-col="age"><code>age</code> — grupa wiekowa; „Age-standardized" = wskaźnik standaryzowany wg wieku, „All ages" = wszystkie grupy łącznie (surowy).</div>
+            <div data-col="cause"><code>cause</code> — przyczyna z hierarchii GBD (lub „All causes"); dla atrybucji pojawia się też kolumna <code>rei</code> (czynnik ryzyka).</div>
+            <div data-col="metric"><code>metric</code> — jednostka: Number (liczba bezwzględna), Rate (na 100 000), Percent (udział).</div>
+            <div data-col="year"><code>year</code> — rok szacunku (1990 – ostatni rok danej edycji).</div>
+            <div data-col="val"><code>val</code> — szacunek punktowy (średnia z rozkładu wyników modelu).</div>
+            <div data-col="upper"><code>upper</code> — górna granica 95% przedziału niepewności (UI).</div>
+            <div data-col="lower"><code>lower</code> — dolna granica 95% przedziału niepewności (UI).</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2.3.2 Słownik -->
+    <section class="section alt" id="slownik">
+      <div class="container narrow">
+        <div class="section-head">
+          <span class="eyebrow">2.3.2 · Glossary</span>
+          <h2>Słownik pojęć</h2>
+          <p>Alfabetyczny słownik kluczowych terminów GBD. Każde hasło: 1–2 zdania.</p>
+        </div>
+        <div class="field">
+          <label for="gl-search">Szukaj terminu</label>
+          <input type="search" id="gl-search" placeholder="np. DALY, sequela, niepewność…" autocomplete="off">
+        </div>
+        <div id="glossary"></div>
+        <p id="gl-empty" class="muted" hidden>Brak haseł pasujących do wyszukiwania.</p>
+        <div class="todo mt-2"><strong>Kompletna lista terminów</strong> — słownik zawiera hasła startowe; do uzupełnienia o pozostałe pojęcia używane na stronie i w publikacjach Hubu.</div>
+      </div>
+    </section>
+
+    <!-- 2.3.3 Linki -->
+    <section class="section" id="linki">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">2.3.3 · Zasoby</span>
+          <h2>Linki zewnętrzne</h2>
+          <p>Kluczowe zasoby GBD/IHME z krótkim opisem.</p>
+        </div>
+        <div class="grid g3">
+          <a class="card link-card" href="https://www.healthdata.org/" rel="noopener" target="_blank">
+            <h3>IHME — Institute for Health Metrics and Evaluation ↗</h3>
+            <p>Strona główna IHME — koordynatora projektu GBD. Aktualności, publikacje, dane, narzędzia wizualizacyjne, informacje o zespole i metodologii.</p>
+            <span class="url">healthdata.org</span>
+          </a>
+          <a class="card link-card" href="https://vizhub.healthdata.org/gbd-results/" rel="noopener" target="_blank">
+            <h3>GBD Results Tool ↗</h3>
+            <p>Główne narzędzie do pobierania danych GBD w formie tabelarycznej. Pozwala generować zestawienia wyników: umieralność, DALY, YLL, YLD, zapadalność, chorobowość, czynniki ryzyka — w podziale na kraje, lata, choroby, wiek i płeć. Eksport do CSV.</p>
+            <span class="url">vizhub.healthdata.org/gbd-results/</span>
+          </a>
+          <a class="card link-card" href="https://vizhub.healthdata.org/gbd-compare/" rel="noopener" target="_blank">
+            <h3>GBD Compare ↗</h3>
+            <p>Interaktywne narzędzie wizualizacyjne do porównywania krajów, chorób i czynników ryzyka. Mapy, wykresy bąbelkowe, diagramy strzałkowe, treemapy. Idealne do szybkiej eksploracji danych.</p>
+            <span class="url">vizhub.healthdata.org/gbd-compare/</span>
+          </a>
+          <a class="card link-card" href="https://www.thelancet.com/gbd" rel="noopener" target="_blank">
+            <h3>GBD Protocol and Appendices ↗</h3>
+            <p>Pełna dokumentacja metodologiczna każdej edycji GBD: opis modeli, źródła danych, definicje przyczyn i czynników ryzyka, wagi niepełnosprawności. Załączniki do publikacji w The Lancet — często ponad 1000 stron.</p>
+            <span class="url">thelancet.com/gbd — sekcja Protocol &amp; Supplementary Materials przy każdej edycji</span>
+          </a>
+          <a class="card link-card" href="https://www.thelancet.com/gbd" rel="noopener" target="_blank">
+            <h3>The Lancet GBD Collection ↗</h3>
+            <p>Zbiór wszystkich publikacji GBD w The Lancet — od GBD 1990 po najnowszą edycję. Artykuły przeglądowe, analizy tematyczne, komentarze. Główne forum publikacyjne projektu GBD.</p>
+            <span class="url">thelancet.com/gbd</span>
+          </a>
+          <a class="card link-card" href="https://www.youtube.com/@ABORHIIHME" rel="noopener" target="_blank">
+            <h3>IHME YouTube ↗</h3>
+            <p>Kanał wideo IHME — prezentacje, wykłady, tutoriale dotyczące korzystania z narzędzi GBD, webinaria tematyczne, nagrania z konferencji.</p>
+            <span class="url">youtube.com/@ABORHIIHME</span>
+            <span class="sample-note">Adres kanału do weryfikacji.</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/site.js"></script>
+  <script src="assets/js/charts.js"></script>
+  <script src="assets/js/pages/metodologia.js"></script>
+</body>
+</html>

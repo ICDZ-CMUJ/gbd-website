@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kontakt i współpraca — GBD Research Hub</title>
+  <meta name="description" content="Skontaktuj się z GBD Research Hub, dołącz do sieci współpracowników z regionu CEE i przeglądaj archiwum GBD CEE Bulletin.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <style>
+    .check { display: flex; gap: 10px; align-items: flex-start; font-size: .9rem; color: var(--ink-2); margin-bottom: 14px; }
+    .check input { margin-top: 4px; accent-color: var(--ncd); width: 16px; height: 16px; flex-shrink: 0; }
+    .info-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+    .info-list li { display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: start; }
+    .info-list .ic { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: var(--ncd-tint); color: var(--ncd-dark); font-weight: 700; }
+    .info-list b { display: block; font-size: .85rem; color: var(--ink-3); font-weight: 500; }
+    .coop-card h4 { margin-bottom: .3em; }
+    .issue { display: grid; grid-template-columns: 110px 1fr; gap: 20px; align-items: center; }
+    .issue-cover { aspect-ratio: 3/4; border-radius: 10px; background: linear-gradient(160deg, var(--ncd-dark), var(--ncd)); color: #fff; padding: 12px; display: flex; flex-direction: column; justify-content: space-between; font-size: .75rem; line-height: 1.2; }
+    .issue-cover b { font-size: 1rem; }
+    .issue-cover .stripe { display: flex; height: 4px; border-radius: 2px; overflow: hidden; }
+    .issue-cover .stripe i { flex: 1; }
+    .contact-grid { grid-template-columns: 1.4fr 1fr; }
+    @media (max-width: 620px) { .contact-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 480px) { .issue { grid-template-columns: 80px 1fr; gap: 14px; } }
+  </style>
+</head>
+<body>
+  <div data-site-header></div>
+
+  <main id="main">
+    <section class="page-hero">
+      <div class="container">
+        <div class="breadcrumbs"><a href="index.html">Start</a> / Kontakt i współpraca</div>
+        <span class="eyebrow">9. Kontakt i współpraca</span>
+        <h1>Kontakt i współpraca</h1>
+        <p class="lead">Napisz do nas, dołącz do sieci badaczy z regionu CEE albo przejrzyj archiwum kwartalnika GBD CEE Bulletin.</p>
+        <nav class="toc" aria-label="Spis treści">
+          <a href="#kontakt">9.1 Kontakt</a>
+          <a href="#dolacz">9.2 Dołącz do sieci</a>
+          <a href="#bulletin">9.3 GBD CEE Bulletin</a>
+        </nav>
+      </div>
+    </section>
+
+    <!-- 9.1 -->
+    <section class="section" id="kontakt">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">9.1</span>
+          <h2>Kontakt</h2>
+        </div>
+        <div class="grid g2 contact-grid" style="gap:32px;align-items:start">
+          <div class="card">
+            <form data-demo="Dziękujemy za wiadomość! Odpowiemy najszybciej, jak to możliwe. (Formularz demonstracyjny — integracja z systemem wysyłki do uzupełnienia.)">
+              <div class="grid g2" style="gap:0 14px">
+                <div class="field"><label for="c-name">Imię i nazwisko</label><input id="c-name" type="text" required autocomplete="name"></div>
+                <div class="field"><label for="c-email">E-mail</label><input id="c-email" type="email" required autocomplete="email"></div>
+              </div>
+              <div class="field">
+                <label for="c-topic">Temat</label>
+                <select id="c-topic" required>
+                  <option value="">Wybierz temat…</option>
+                  <option>Współpraca naukowa</option>
+                  <option>Zapytanie o dane / analizy</option>
+                  <option>Policy / administracja publiczna</option>
+                  <option>Media</option>
+                  <option>Dydaktyka</option>
+                  <option>Inne</option>
+                </select>
+              </div>
+              <div class="field"><label for="c-msg">Wiadomość</label><textarea id="c-msg" required></textarea></div>
+              <label class="check"><input type="checkbox" required> <span>Wyrażam zgodę na przetwarzanie moich danych osobowych w celu udzielenia odpowiedzi na wiadomość. [Link do klauzuli informacyjnej RODO — do uzupełnienia]</span></label>
+              <button class="btn btn-primary" type="submit">Wyślij wiadomość</button>
+              <p class="form-msg" role="status"></p>
+            </form>
+          </div>
+          <div>
+            <div class="card flat">
+              <h3>GBD Research Hub</h3>
+              <ul class="info-list mt-1">
+                <li><span class="ic" aria-hidden="true">⌂</span><div><b>Instytucja</b>[Nazwa instytucji]</div></li>
+                <li><span class="ic" aria-hidden="true">◎</span><div><b>Adres</b>[ulica, numer]<br>[kod pocztowy, miasto]</div></li>
+                <li><span class="ic" aria-hidden="true">@</span><div><b>E-mail</b><a href="mailto:kontakt@example.org">[e-mail]</a></div></li>
+                <li><span class="ic" aria-hidden="true">☏</span><div><b>Telefon</b>[telefon]</div></li>
+              </ul>
+            </div>
+            <p class="small muted mt-1">Dziennikarze: <a href="media.html#kontakt-media">kontakt dla mediów →</a></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9.2 -->
+    <section class="section alt" id="dolacz">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">9.2</span>
+          <h2>Dołącz do sieci</h2>
+          <p class="lead">GBD Research Hub buduje sieć współpracowników zainteresowanych analizą obciążenia chorobami w Europie Środkowo-Wschodniej. Jeśli prowadzisz badania z wykorzystaniem danych GBD, pracujesz w instytucji zdrowia publicznego w regionie CEE lub chcesz włączyć się w nasze projekty analityczne i dydaktyczne — zapraszamy do kontaktu.</p>
+          <p>Współpraca może obejmować: wspólne publikacje, udział w warsztatach i konferencjach, wymianę danych i doświadczeń, wkład w rozwój Data Stories i materiałów dydaktycznych.</p>
+        </div>
+        <div class="grid g4">
+          <div class="tone tone-blue coop-card"><h4>Wspólne publikacje</h4><p>Artykuły naukowe i analizy porównawcze dla krajów regionu.</p></div>
+          <div class="tone tone-coral coop-card"><h4>Warsztaty i konferencje</h4><p>Spotkania sieci, szkolenia z narzędzi GBD, prezentacje wyników.</p></div>
+          <div class="tone tone-amber coop-card"><h4>Wymiana danych i doświadczeń</h4><p>Lokalne źródła danych, kontekst krajowy, dobre praktyki.</p></div>
+          <div class="tone tone-purple coop-card"><h4>Data Stories i dydaktyka</h4><p>Wkład w narracyjne analizy i materiały do nauczania.</p></div>
+        </div>
+        <div class="mt-2" style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+          <a class="btn btn-primary" href="mailto:kontakt@example.org?subject=Do%C5%82%C4%85czenie%20do%20sieci%20GBD%20CEE">Zgłoś chęć współpracy</a>
+          <span class="sample-note">Adres e-mail w przycisku jest tymczasowy — do uzupełnienia.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9.3 -->
+    <section class="section" id="bulletin">
+      <div class="container narrow">
+        <div class="section-head">
+          <span class="eyebrow">9.3</span>
+          <h2>GBD CEE Bulletin</h2>
+          <p class="lead">GBD CEE Bulletin to kwartalnik GBD Research Hub. Każde wydanie zawiera przegląd najnowszych danych i publikacji GBD istotnych dla regionu, zapowiedzi wydarzeń, krótkie analizy tematyczne i aktualności z pracy Hubu. Zapisz się na stronie głównej, żeby otrzymywać Bulletin na swoją skrzynkę.</p>
+          <a class="btn btn-coral" href="index.html#newsletter">Zapisz się na Bulletin</a>
+        </div>
+
+        <h3>Archiwum wydań</h3>
+        <div class="card issue mb-2">
+          <div class="issue-cover" aria-hidden="true">
+            <span>GBD CEE<br>Bulletin</span>
+            <b>Nr 1</b>
+            <div class="stripe"><i style="background:var(--cmnn)"></i><i style="background:var(--ncd);flex:3"></i><i style="background:var(--inj)"></i></div>
+          </div>
+          <div>
+            <div class="pills mt-0" style="margin-bottom:6px"><span class="badge">Przykład</span><span class="pill">Jesień 2026</span></div>
+            <h4>[Przykład] GBD CEE Bulletin — nr 1</h4>
+            <p class="muted small">Przegląd danych GBD dla regionu, zapowiedzi wydarzeń, analiza tematyczna, aktualności Hubu.</p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <span class="btn btn-ghost" aria-disabled="true">PDF — do uzupełnienia</span>
+              <span class="btn btn-ghost" aria-disabled="true">Wersja webowa — do uzupełnienia</span>
+            </div>
+          </div>
+        </div>
+        <div class="todo"><strong>Archiwum wydań</strong> — kolejne numery kwartalnika: PDF do pobrania i wersja webowa każdego wydania.</div>
+      </div>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/site.js"></script>
+</body>
+</html>

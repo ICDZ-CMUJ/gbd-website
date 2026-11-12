@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Publikacje — GBD Research Hub</title>
+  <meta name="description" content="Repozytorium dorobku naukowego i analitycznego GBD Research Hub: artykuły naukowe, raporty i policy briefs, prezentacje.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <style>
+    .filter-bar { position: sticky; top: 68px; z-index: 5; background: rgba(251,250,247,.96); backdrop-filter: blur(8px); padding: 16px 0; border-bottom: 1px solid var(--line); }
+    .filter-bar .controls { margin: 0; align-items: center; }
+    .filter-bar .field { flex: 1 1 220px; }
+    .region-banner { display: none; margin-top: 18px; }
+    .region-banner.show { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .pub-group { padding-top: 36px; scroll-margin-top: 150px; }
+    .pub-group h2 { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+    .pub-group h2 .count { font-size: .9rem; font-weight: 500; color: var(--ink-3); }
+    .pub-list { list-style: none; margin: 0 0 18px; padding: 0; display: grid; gap: 12px; }
+    .pub { background: var(--paper); border: 1px solid var(--line); border-left: 4px solid var(--ncd); border-radius: var(--radius-sm); padding: 18px 22px; }
+    .pub[data-type="raport"] { border-left-color: var(--coral); }
+    .pub[data-type="prezentacja"] { border-left-color: var(--amber); }
+    .pub h3 { font-size: 1.08rem; margin-bottom: 4px; }
+    .pub .meta { font-size: .88rem; color: var(--ink-3); margin-bottom: 8px; display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; }
+    .pub .authors { color: var(--ink-2); font-size: .95rem; margin-bottom: 6px; }
+    .pub p { color: var(--ink-2); font-size: .95rem; margin-bottom: 8px; }
+    .pub .links { font-size: .9rem; }
+    .empty { display: none; }
+    .empty.show { display: block; }
+    .pub-group.hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div data-site-header></div>
+
+  <main id="main">
+    <section class="page-hero">
+      <div class="container">
+        <div class="breadcrumbs"><a href="index.html">Start</a> / Publikacje</div>
+        <span class="eyebrow">6. Publikacje</span>
+        <h1>Publikacje</h1>
+        <p class="lead">Repozytorium dorobku naukowego i analitycznego zespołu, od najnowszych pozycji. Każda pozycja zawiera tytuł, autorów, streszczenie i link do pełnego tekstu lub DOI.</p>
+        <nav class="toc" aria-label="Spis treści">
+          <a href="#artykul">6.1 Artykuły naukowe</a>
+          <a href="#raport">6.2 Raporty i policy briefs</a>
+          <a href="#prezentacja">6.3 Prezentacje</a>
+        </nav>
+        <div class="region-banner tone tone-coral" id="region-banner" role="status">
+          <span id="region-banner-text"></span>
+          <button type="button" class="btn btn-ghost" id="region-clear">Pokaż wszystkie materiały</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="filter-bar">
+      <div class="container">
+        <div class="controls" role="search">
+          <div>
+            <span class="sr-only" id="lbl-type">Typ materiału</span>
+            <div class="seg" id="f-type" aria-labelledby="lbl-type">
+              <button type="button" data-v="all" aria-pressed="true">Wszystkie</button>
+              <button type="button" data-v="artykul" aria-pressed="false">Artykuły naukowe</button>
+              <button type="button" data-v="raport" aria-pressed="false">Raporty i policy briefs</button>
+              <button type="button" data-v="prezentacja" aria-pressed="false">Prezentacje</button>
+            </div>
+          </div>
+          <div>
+            <span class="sr-only" id="lbl-region">Region</span>
+            <div class="seg" id="f-region" aria-labelledby="lbl-region">
+              <button type="button" data-v="all" aria-pressed="true">Wszystkie</button>
+              <button type="button" data-v="pl" aria-pressed="false">Polska</button>
+              <button type="button" data-v="cee" aria-pressed="false">CEE</button>
+              <button type="button" data-v="global" aria-pressed="false">Globalne</button>
+            </div>
+          </div>
+          <div class="field">
+            <label class="sr-only" for="f-q">Szukaj</label>
+            <input type="search" id="f-q" placeholder="Szukaj w tytułach, autorach, streszczeniach…">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="section" style="padding-top:12px">
+      <div class="container">
+        <p class="empty tone tone-sand mt-2" id="empty">Brak materiałów spełniających wybrane kryteria.</p>
+
+        <div class="pub-group" id="artykul" data-group="artykul">
+          <h2>6.1 Artykuły naukowe <span class="count"></span></h2>
+          <p class="muted">Publikacje w recenzowanych czasopismach, w tym współautorstwo w cyklu GBD w The Lancet.</p>
+          <ul class="pub-list"></ul>
+          <div class="todo"><strong>Lista publikacji</strong> — pełny wykaz artykułów zespołu z DOI.</div>
+        </div>
+
+        <div class="pub-group" id="raport" data-group="raport">
+          <h2>6.2 Raporty i policy briefs <span class="count"></span></h2>
+          <p class="muted">Raporty własne Hubu, policy briefs i analizy tematyczne. To materiały nierecenzowane, ale oparte na danych GBD.</p>
+          <ul class="pub-list"></ul>
+          <div class="todo"><strong>Lista raportów</strong> — raporty, policy briefs i analizy tematyczne z plikami PDF.</div>
+        </div>
+
+        <div class="pub-group" id="prezentacja" data-group="prezentacja">
+          <h2>6.3 Prezentacje <span class="count"></span></h2>
+          <p class="muted">Slajdy z konferencji, warsztatów i wykładów do pobrania w PDF.</p>
+          <ul class="pub-list"></ul>
+          <div class="todo"><strong>Lista prezentacji</strong> — slajdy w PDF z nazwą wydarzenia i datą.</div>
+        </div>
+
+        <p class="sample-note mt-3">Pozycje oznaczone [Przykład] to wpisy demonstracyjne do zastąpienia rzeczywistymi publikacjami.</p>
+      </div>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/site.js"></script>
+  <script src="assets/js/pages/publikacje.js"></script>
+</body>
+</html>

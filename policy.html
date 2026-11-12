@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Policy Corner — GBD Research Hub</title>
+  <meta name="description" content="Policy Corner GBD Research Hub — dane GBD przełożone na wnioski i rekomendacje dla decydentów w Polsce i regionie CEE.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <style>
+    .persp p { font-size: 1.05rem; }
+    .chart-title { font-weight: 600; margin: 28px 0 4px; }
+    .spread-note { text-align: center; color: var(--ink-3); font-size: .92rem; margin-top: 10px; }
+    #cvd-bars .hbar { grid-template-columns: 170px 1fr 48px; }
+
+    /* Szablon policy brief — dokument A4 */
+    .brief-wrap { display: flex; justify-content: center; }
+    .brief {
+      background: #fff; width: 100%; max-width: 794px; border: 1px solid var(--line); border-radius: 16px;
+      box-shadow: var(--shadow); padding: 48px 52px; font-size: 15.5px; color: var(--ink);
+    }
+    .brief .b-kicker { font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ncd); font-weight: 600; }
+    .brief h3.b-title { font-size: 1.55rem; font-weight: 500; margin: 6px 0 8px; }
+    .brief .b-sub { color: var(--ink-2); margin-bottom: 4px; }
+    .brief .b-meta { font-size: .8rem; color: var(--ink-3); }
+    .brief hr { border: 0; border-top: 2px solid var(--ncd); margin: 18px 0 22px; }
+    .brief .b-key { background: var(--ncd-tint); border: 1px solid #92bbe8; border-radius: 12px; padding: 18px 22px; }
+    .brief .b-key h4 { font-size: .85rem; letter-spacing: .06em; text-transform: uppercase; color: var(--ncd-dark); font-weight: 500; }
+    .brief .b-key ul { margin: 0; padding-left: 18px; color: var(--ncd); }
+    .brief .b-key li { margin: 6px 0; }
+    .brief .b-key li::marker { color: var(--ncd-dark); }
+    .brief .b-sec { margin-top: 22px; }
+    .brief .b-sec .b-num { font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ncd); }
+    .brief .b-sec h4 { font-size: 1.12rem; font-weight: 500; margin: 2px 0 6px; }
+    .brief .b-sec p { color: var(--ink-2); margin-bottom: 8px; }
+    .brief .b-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 12px 0; }
+    .brief .b-kpis div { background: var(--sand); border-radius: 10px; padding: 14px 10px; text-align: center; }
+    .brief .b-kpis b { display: block; font-size: 1.35rem; font-weight: 500; }
+    .brief .b-kpis span { font-size: .78rem; color: var(--ink-3); }
+    .brief .b-chart { border: 1.5px dashed #c9c4b5; border-radius: 10px; padding: 12px; text-align: center; color: var(--ink-3); font-size: .88rem; }
+    .brief .b-rec { border-left: 3px solid var(--inj); padding: 4px 0 4px 18px; margin: 12px 0 16px; }
+    .brief .b-rec b { display: block; font-weight: 500; color: var(--inj-dark); }
+    .brief .b-rec span { color: var(--inj); font-size: .93rem; }
+    .brief .b-foot { border-top: 1px solid var(--line); margin-top: 30px; padding-top: 14px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: .8rem; color: var(--ink-3); }
+    .brief-actions { display: flex; justify-content: center; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
+
+    table.guide td:first-child { font-weight: 600; white-space: nowrap; color: var(--ink); width: 140px; }
+    table.guide td { color: var(--ink-2); }
+
+    .struct { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 12px 0; }
+    .struct .arrow { color: var(--ink-3); }
+    .ph-card { border: 1px dashed #c9c4b5; background: var(--paper); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; gap: 8px; }
+    .ph-card .ph-thumb { height: 110px; border-radius: 10px; background: repeating-linear-gradient(-45deg, var(--sand) 0 10px, var(--sand-2) 10px 20px); display: grid; place-items: center; color: var(--ink-3); font-size: .85rem; }
+
+    @media (max-width: 620px) {
+      .brief { padding: 28px 20px; }
+      .brief .b-kpis { grid-template-columns: 1fr; }
+      #cvd-bars .hbar { grid-template-columns: 110px 1fr 40px; }
+      table.guide td:first-child { white-space: normal; width: auto; }
+    }
+
+    /* Drukowanie tylko szablonu (klasa ustawiana przez przycisk „Drukuj szablon") */
+    @media print {
+      body.printing-brief * { visibility: hidden; }
+      body.printing-brief #brief, body.printing-brief #brief * { visibility: visible; }
+      body.printing-brief #brief { position: absolute; left: 0; top: 0; width: 100%; max-width: none; border: 0; box-shadow: none; padding: 0; border-radius: 0; }
+      body.printing-brief .brief .b-key { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      @page { size: A4; margin: 16mm; }
+    }
+  </style>
+</head>
+<body>
+  <div data-site-header></div>
+
+  <main id="main">
+    <section class="page-hero">
+      <div class="container">
+        <div class="breadcrumbs"><a href="index.html">Start</a> / Policy Corner</div>
+        <span class="eyebrow">5. Policy Corner</span>
+        <h1>Dane GBD dla decydentów</h1>
+        <p class="lead">Przestrzeń dla decydentów, urzędników i twórców polityk zdrowotnych: rzeczowe, oparte na danych wnioski i rekomendacje — językiem briefingów, nie artykułów naukowych.</p>
+        <nav class="toc" aria-label="Spis treści">
+          <a href="#wprowadzenie">Wprowadzenie</a>
+          <a href="#news-regionalna">Policy news</a>
+          <a href="#szablon">Szablon policy brief</a>
+          <a href="#polska">5.1 Polska — rekomendacje</a>
+          <a href="#cee">5.2 CEE — rekomendacje</a>
+          <a href="#infografiki">5.3 Infografiki</a>
+        </nav>
+      </div>
+    </section>
+
+    <!-- Wprowadzenie -->
+    <section class="section" id="wprowadzenie">
+      <div class="container narrow">
+        <span class="eyebrow">Wprowadzenie</span>
+        <h2>Od danych do decyzji</h2>
+        <div class="prose">
+          <p class="lead">Dane GBD dostarczają obiektywnej, porównywalnej i regularnie aktualizowanej wiedzy o stanie zdrowia populacji. Policy Corner to przestrzeń, w której przekładamy te dane na konkretne wnioski i rekomendacje dla polskich i regionalnych decydentów.</p>
+          <p>Nasze analizy opierają się na najnowszych szacunkach GBD i uwzględniają kontekst krajowy — strukturę systemu ochrony zdrowia, dostępne zasoby i priorytety polityki zdrowotnej. Nie zastępują procesu decyzyjnego — dostarczają mu podstaw opartych na danych (evidence-informed policy).</p>
+        </div>
+        <div class="tone tone-sand mt-2">
+          <h4>Jak piszemy</h4>
+          <p>Ton rzeczowy, rekomendacyjny, oparty na danych. Bez żargonu akademickiego — piszemy językiem briefingów i raportów rządowych. Wskazujemy ograniczenia danych wprost.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Policy news 1 -->
+    <section class="section alt" id="news-regionalna">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Policy Corner news · 1</span>
+          <h2>Dlaczego ważna jest perspektywa regionalna?</h2>
+        </div>
+
+        <div class="split-vs persp">
+          <div class="tone tone-red">
+            <h3>Perspektywa krajowa</h3>
+            <p>„Polska ma standaryzowany współczynnik umieralności z powodu CVD na poziomie 250/100 tys." — jeden wskaźnik, jedno zalecenie, jeden program dla 38 mln ludzi.</p>
+          </div>
+          <div class="vs">vs</div>
+          <div class="tone tone-green">
+            <h3>Perspektywa wojewódzka</h3>
+            <p>16 województw to 16 różnych profili zdrowotnych — z różnymi priorytetami, czynnikami ryzyka i potrzebami interwencyjnymi.</p>
+          </div>
+        </div>
+
+        <p class="chart-title">Przykład: zróżnicowanie standaryzowanego współczynnika umieralności z powodu chorób układu krążenia między województwami</p>
+        <p class="sample-note">Dane przykładowe — ilustracja koncepcji. Umieralność = mortality rate (liczba zgonów na 100 tys. populacji w danym okresie).</p>
+        <div id="cvd-bars" class="mt-1" style="max-width:900px"></div>
+        <p class="spread-note">Rozrzut ~60%: od ~195 do ~320 na 100 tys. Średnia krajowa maskuje różnice tak duże jak między niektórymi krajami UE.</p>
+
+        <h3 class="mt-3">Co może stać za tymi różnicami?</h3>
+        <div class="grid g2" style="gap:14px">
+          <div class="tone tone-coral"><h4>Profil czynników ryzyka</h4><p>Różnice w rozpowszechnieniu palenia, spożyciu alkoholu, diecie, aktywności fizycznej. Śląskie i łódzkie: historycznie wyższy odsetek palaczy.</p></div>
+          <div class="tone tone-blue"><h4>Struktura demograficzna</h4><p>Starzejące się województwa wschodnie vs. młodsze populacje metropolitalne. Standaryzacja koryguje wiek, ale nie eliminuje wszystkich różnic strukturalnych.</p></div>
+          <div class="tone tone-amber"><h4>Dostęp do opieki zdrowotnej</h4><p>Gęstość kardiologów, czas dojazdu do ośrodka interwencyjnego, dostępność rehabilitacji kardiologicznej. Różnice miasto–wieś.</p></div>
+          <div class="tone tone-sand"><h4>Czynniki społeczno-ekonomiczne</h4><p>Wykształcenie, dochód, bezrobocie. Województwa o niższym PKB per capita mają systematycznie gorsze wskaźniki zdrowotne.</p></div>
+        </div>
+
+        <div class="tone tone-green center mt-2">
+          <h3>Dlatego GBD Research Hub buduje dashboardy wojewódzkie</h3>
+          <p style="font-size:1.08rem">Dane na poziomie kraju mówią, co jest problemem ogólnie. Dane na poziomie województw mówią, gdzie interweniować, co różnicuje regiony i jakie działania lokalne mogą przynieść największy zysk zdrowotny. Marszałek województwa potrzebuje innych danych niż minister zdrowia.</p>
+          <a class="btn btn-ghost mt-1" href="polska.html#dashboard" style="background:#fff">Otwórz dashboard wojewódzki →</a>
+        </div>
+
+        <div class="tone tone-sand mt-2 small">
+          <p class="mb-0">Uwaga terminologiczna: Umieralność (mortality rate) to liczba zgonów na 100 tys. populacji w danym okresie — mierzy ryzyko zgonu w populacji. Śmiertelność (case fatality rate, CFR) to odsetek chorych, którzy umierają z powodu danej choroby — mierzy ryzyko zgonu wśród chorych. W kontekście GBD i porównań między populacjami stosujemy standaryzowane współczynniki umieralności.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Szablon policy brief -->
+    <section class="section" id="szablon">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Standard Hubu</span>
+          <h2>Szablon POLICY BRIEF</h2>
+          <p class="muted">Wizualny wzorzec dobrego policy briefu opartego na danych GBD — struktura: problem → dane → czynniki ryzyka → rekomendacje → źródła. Przykład edukacyjny i jednocześnie standard dla własnych briefów Hubu.</p>
+        </div>
+
+        <div class="brief-wrap">
+          <article class="brief" id="brief" aria-label="Szablon policy brief">
+            <div class="b-kicker">GBD Research Hub — Policy Brief nr [X]/2025</div>
+            <h3 class="b-title">[Tytuł: krótki, konkretny, z kluczowym wnioskiem]</h3>
+            <p class="b-sub">Przykład: Umieralność z powodu chorób układu krążenia w Polsce — priorytety i rekomendacje na podstawie danych GBD 2021</p>
+            <div class="b-meta">[Miesiąc] 2025 | GBD Research Hub | [Instytucja]</div>
+            <hr>
+
+            <div class="b-key">
+              <h4>Kluczowe wnioski</h4>
+              <ul>
+                <li>[Wniosek 1 — najważniejszy fakt z danych GBD, 1–2 zdania]</li>
+                <li>[Wniosek 2 — porównanie z innymi krajami lub regionami]</li>
+                <li>[Wniosek 3 — główna rekomendacja, 1 zdanie]</li>
+              </ul>
+            </div>
+
+            <div class="b-sec">
+              <div class="b-num">Sekcja 1</div>
+              <h4>Problem</h4>
+              <p>[2–3 zdania: co jest problemem zdrowotnym, dlaczego jest ważny, kogo dotyczy. Unikaj żargonu. Pisz językiem zrozumiałym dla osoby decyzyjnej, nie epidemiologa.]</p>
+            </div>
+
+            <div class="b-sec">
+              <div class="b-num">Sekcja 2</div>
+              <h4>Co mówią dane GBD?</h4>
+              <p>[3–5 zdań z konkretnymi liczbami. Zawsze: szacunek + przedział niepewności + edycja GBD. Porównanie z innymi krajami lub grupą odniesienia.]</p>
+              <div class="b-kpis">
+                <div><b>[Liczba]</b><span>[Opis wskaźnika, np. DALY na 100 tys.]</span></div>
+                <div><b>[Liczba]</b><span>[Porównanie, np. średnia UE-27]</span></div>
+                <div><b>[Trend]</b><span>[Zmiana od 1990 lub 2010]</span></div>
+              </div>
+              <div class="b-chart">Miejsce na wykres lub mapę — max 1 element graficzny per brief</div>
+            </div>
+
+            <div class="b-sec">
+              <div class="b-num">Sekcja 3</div>
+              <h4>Czynniki ryzyka — co napędza problem?</h4>
+              <p>[2–3 zdania: które czynniki ryzyka GBD identyfikuje jako kluczowe, ile obciążenia jest im przypisywane, które z nich są modyfikowalne.]</p>
+            </div>
+
+            <div class="b-sec">
+              <div class="b-num">Sekcja 4</div>
+              <h4>Rekomendacje</h4>
+              <div class="b-rec"><b>Rekomendacja 1 — [priorytetowa]</b><span>[Konkretna interwencja, dla kogo, z jakim oczekiwanym efektem. Odwołanie do dowodów z innych krajów.]</span></div>
+              <div class="b-rec"><b>Rekomendacja 2</b><span>[Kolejna interwencja — komplementarna lub alternatywna.]</span></div>
+              <div class="b-rec"><b>Rekomendacja 3 — [systemowa / długoterminowa]</b><span>[Zmiana strukturalna: poprawa kodowania przyczyn zgonów, wzmocnienie rejestrów, zmiana polityki podatkowej etc.]</span></div>
+            </div>
+
+            <div class="b-sec">
+              <div class="b-num">Sekcja 5</div>
+              <h4>Źródła i ograniczenia</h4>
+              <p>[Cytowanie GBD w formacie Vancouver. Wskazanie głównych ograniczeń danych: jakość kodowania przyczyn zgonów, brak danych subnarodowych, szerokość przedziałów niepewności. 2–3 zdania.]</p>
+            </div>
+
+            <div class="b-foot"><span>GBD Research Hub | [instytucja]</span><span>Kontakt: [email] | gbd-hub.pl</span></div>
+          </article>
+        </div>
+        <div class="brief-actions no-print">
+          <button type="button" class="btn btn-primary" id="print-brief">Drukuj szablon / zapisz jako PDF</button>
+        </div>
+
+        <h3 class="mt-3" id="wytyczne">Wytyczne do pisania policy briefów GBD Research Hub</h3>
+        <div class="table-wrap">
+          <table class="data guide">
+            <tbody>
+              <tr><td>Długość</td><td>Maks. 2 strony A4 (800–1000 słów). Jedna strona = ideał. Decydent czyta w 3 minuty lub wcale.</td></tr>
+              <tr><td>Język</td><td>Polski. Bez żargonu epidemiologicznego — jeśli używasz terminu GBD, definiuj go w nawiasie. „DALY (lata życia utracone z powodu choroby i niepełnosprawności)".</td></tr>
+              <tr><td>Dane</td><td>Zawsze: szacunek punktowy + 95% UI + edycja GBD + rok danych. Wskaźniki standaryzowane wg wieku. Porównanie z min. jedną grupą odniesienia (UE-27, CEE, inne województwo).</td></tr>
+              <tr><td>Grafika</td><td>Max 1 wykres lub mapa. Musi być czytelny po wydrukowaniu w czerni i bieli. Unikaj wykresów kołowych. Preferuj: ranking, trend, mapa cieplna.</td></tr>
+              <tr><td>Rekomendacje</td><td>2–3 konkretnych, wykonalnych rekomendacji. Każda: co zrobić + kto powinien + z jakim oczekiwanym efektem. Nigdy „potrzeba dalszych badań" jako jedyna rekomendacja.</td></tr>
+              <tr><td>Ton</td><td>Rzeczowy, niealarmistyczny. Evidence-informed — nie evidence-based. Dane GBD to jedno z narzędzi, nie jedyne źródło prawdy. Wskazuj ograniczenia wprost.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5.1 Polska -->
+    <section class="section alt" id="polska">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">5.1</span>
+          <h2>Polska — rekomendacje</h2>
+          <p class="muted">Krótkie dokumenty rekomendacyjne (policy briefs) dotyczące priorytetów zdrowotnych Polski. Każdy brief: 2–4 strony.</p>
+          <div class="struct" aria-label="Struktura briefu">
+            <span class="pill red">Problem</span><span class="arrow">→</span>
+            <span class="pill blue">Dane GBD</span><span class="arrow">→</span>
+            <span class="pill amber">Wniosek</span><span class="arrow">→</span>
+            <span class="pill green">Rekomendacja</span>
+          </div>
+        </div>
+        <div class="grid g3">
+          <div class="ph-card"><div class="ph-thumb">Policy brief nr 1/2026</div><h4 class="mb-0">Dlaczego ważna jest perspektywa regionalna?</h4><p class="small muted mb-0">Zróżnicowanie umieralności CVD między województwami.</p><a href="#news-regionalna" class="small">Czytaj →</a></div>
+          <div class="ph-card"><div class="ph-thumb">PDF</div><h4 class="mb-0">[Temat briefu]</h4><p class="small muted mb-0">[Krótki opis]</p></div>
+          <div class="ph-card"><div class="ph-thumb">PDF</div><h4 class="mb-0">[Temat briefu]</h4><p class="small muted mb-0">[Krótki opis]</p></div>
+        </div>
+        <div class="todo mt-2"><strong>Tematy pierwszych briefów, treść.</strong></div>
+      </div>
+    </section>
+
+    <!-- 5.2 CEE -->
+    <section class="section" id="cee">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">5.2</span>
+          <h2>CEE — rekomendacje</h2>
+          <p class="muted">Analogicznie — policy briefs o perspektywie regionalnej: wspólne wyzwania krajów Europy Środkowo-Wschodniej i interwencje o największym potencjalnym zysku zdrowotnym.</p>
+        </div>
+        <div class="grid g3">
+          <div class="ph-card"><div class="ph-thumb">PDF</div><h4 class="mb-0">[Temat briefu CEE]</h4><p class="small muted mb-0">[Krótki opis]</p></div>
+          <div class="ph-card"><div class="ph-thumb">PDF</div><h4 class="mb-0">[Temat briefu CEE]</h4><p class="small muted mb-0">[Krótki opis]</p></div>
+          <div class="ph-card"><div class="ph-thumb">PDF</div><h4 class="mb-0">[Temat briefu CEE]</h4><p class="small muted mb-0">[Krótki opis]</p></div>
+        </div>
+        <div class="todo mt-2"><strong>Tematy, treść.</strong></div>
+      </div>
+    </section>
+
+    <!-- 5.3 Infografiki -->
+    <section class="section alt" id="infografiki">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">5.3</span>
+          <h2>Infografiki</h2>
+          <p class="muted">Gotowe do użycia materiały graficzne prezentujące kluczowe dane i rekomendacje. Format: do pobrania w PNG/PDF, do druku i social mediów.</p>
+        </div>
+        <div class="grid g4">
+          <div class="ph-card"><div class="ph-thumb">PNG · PDF</div><h4 class="mb-0">[Infografika]</h4></div>
+          <div class="ph-card"><div class="ph-thumb">PNG · PDF</div><h4 class="mb-0">[Infografika]</h4></div>
+          <div class="ph-card"><div class="ph-thumb">PNG · PDF</div><h4 class="mb-0">[Infografika]</h4></div>
+          <div class="ph-card"><div class="ph-thumb">PNG · PDF</div><h4 class="mb-0">[Infografika]</h4></div>
+        </div>
+        <div class="todo mt-2"><strong>Tematy, projekty graficzne.</strong></div>
+      </div>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/site.js"></script>
+  <script src="assets/js/charts.js"></script>
+  <script src="assets/js/pages/policy.js"></script>
+</body>
+</html>

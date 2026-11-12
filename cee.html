@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kraje CEE — GBD Research Hub</title>
+  <meta name="description" content="Analizy porównawcze obciążenia chorobami dla regionu Europy Środkowo-Wschodniej na podstawie danych Global Burden of Disease Study.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <style>
+    .phase { position: relative; }
+    .phase .phase-badge { position: absolute; top: 18px; right: 20px; padding: 3px 14px; border-radius: 999px; font-size: .9rem; }
+    .phase h3 { padding-right: 90px; }
+    .phase .stack { margin-top: 14px; }
+    .phase-1 .phase-badge { background: var(--ncd-mid); color: var(--ncd-dark); }
+    .phase-2 .phase-badge { background: var(--purple-mid); color: var(--purple-dark); }
+    .phase-3 .phase-badge { background: var(--coral-mid); color: var(--coral-dark); }
+    .phase-4 .phase-badge { background: var(--inj-mid); color: var(--inj-dark); }
+    .key-q { display: grid; grid-template-columns: 56px 1fr; gap: 18px; align-items: center; }
+    .key-q .icon { width: 56px; height: 56px; border-radius: 50%; background: var(--amber); display: grid; place-items: center; color: var(--amber-dark); font-size: 1.4rem; }
+    .key-q p { font-size: 1.08rem; color: var(--amber-dark) !important; margin: 0; }
+    .gap-col h3 { text-align: center; }
+    .gap-item { padding: 12px 18px; border-radius: 10px; margin-top: 10px; }
+    .gap-west .gap-item { background: var(--ncd-mid); color: var(--ncd-dark); }
+    .gap-cee .gap-item { background: var(--coral-mid); color: var(--coral-dark); }
+    .driver .pill { font-size: .92rem; }
+    .driver.tone-coral .pill { background: var(--coral-mid); color: var(--coral-dark); }
+    .driver.tone-purple .pill { background: var(--purple-mid); color: var(--purple-dark); }
+    .driver.tone-sand .pill { background: var(--sand-2); color: var(--ink-2); border: 1px solid var(--line); }
+    .country-list { columns: 3 160px; margin: 8px 0 0; padding-left: 18px; }
+    .panel-title { display: flex; justify-content: space-between; align-items: end; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+    .panel-title h3 { margin: 0; }
+    .chip[aria-pressed="true"] { background: var(--ncd); }
+    .teaser { display: flex; flex-direction: column; gap: 10px; }
+    .teaser .badge { align-self: flex-start; }
+    @media (max-width: 620px) {
+      .phase h3 { padding-right: 0; margin-top: 34px; }
+      .phase .phase-badge { top: 14px; left: 20px; right: auto; }
+      .stack > div { font-size: .72rem; }
+    }
+  </style>
+</head>
+<body>
+  <div data-site-header></div>
+
+  <main id="main">
+    <section class="page-hero">
+      <div class="container">
+        <div class="breadcrumbs"><a href="index.html">Start</a> / Kraje CEE</div>
+        <span class="eyebrow">4. Kraje CEE</span>
+        <h1>Europa Środkowo-Wschodnia w danych GBD</h1>
+        <p class="lead">Analizy porównawcze dla regionu Europy Środkowo-Wschodniej — o skromniejszym zakresie niż sekcja Polska, ale o analogicznej strukturze i gotowe do rozbudowy.</p>
+        <nav class="toc" aria-label="Spis treści">
+          <a href="#porownania">4.1 Porównania regionalne</a>
+          <a href="#wskazniki">4.2 Kluczowe wskaźniki</a>
+          <a href="#porownywarka">4.3 Porównywarka krajów</a>
+          <a href="#data-stories">4.4 Data Stories</a>
+          <a href="#materialy">4.5 Pobierz materiały</a>
+        </nav>
+      </div>
+    </section>
+
+    <!-- 4.1 Porównania regionalne -->
+    <section class="section" id="porownania">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">4.1</span>
+          <h2>Porównania regionalne</h2>
+        </div>
+        <div class="prose narrow">
+          <p>Europa Środkowo-Wschodnia — od krajów bałtyckich po Bałkany — dzieli szereg wspólnych wyzwań zdrowotnych: wysoką śmiertelność z powodu chorób układu krążenia, rosnące obciążenie chorobami nowotworowymi, znaczący wpływ czynników ryzyka związanych ze stylem życia — w tym palenia tytoniu, spożycia alkoholu i niezbilansowanej diety. Jednocześnie region ten charakteryzuje się dużym zróżnicowaniem wewnętrznym: kraje takie jak Czechy i Słowenia zbliżają się wskaźnikami zdrowotnymi do Europy Zachodniej, podczas gdy Rumunia, Bułgaria czy Ukraina pozostają wyraźnie w tyle.</p>
+          <p>GBD Research Hub analizuje dane dla regionu CEE, aby identyfikować wspólne wzorce, porównywać trajektorie zmian i wskazywać obszary wymagające działań — zarówno na poziomie krajowym, jak i regionalnym.</p>
+        </div>
+        <div class="todo narrow mt-2">
+          <strong>Definicja „CEE" przyjęta przez Hub (lista krajów) oraz dane porównawcze.</strong>
+          <p class="mb-0 mt-1">Propozycja robocza — 12 krajów używanych w widżetach poniżej:</p>
+          <ul class="country-list" id="cee-list"></ul>
+        </div>
+
+        <!-- Transformacja epidemiologiczna -->
+        <div class="anchor-sub" id="transformacja">
+          <div class="section-head">
+            <h3 style="font-size:1.5rem">Transformacja epidemiologiczna w krajach Europy Środkowej</h3>
+            <p class="muted">Jak zmienia się struktura obciążenia chorobami w miarę rozwoju społeczno-ekonomicznego — w podziale na trzy grupy przyczyn GBD.</p>
+          </div>
+          <div class="legend">
+            <span><i style="background:var(--cmnn)"></i>Choroby zakaźne, matczyne, żywieniowe</span>
+            <span><i style="background:var(--ncd)"></i>Choroby niezakaźne (NCD)</span>
+            <span><i style="background:var(--inj)"></i>Urazy</span>
+          </div>
+          <div class="grid" style="gap:14px" id="phases"></div>
+          <p class="sample-note mt-1">Udziały procentowe są ilustracyjne — obrazują koncepcję transformacji epidemiologicznej, nie konkretne szacunki GBD.</p>
+          <div class="tone tone-amber mt-2 key-q">
+            <div class="icon" aria-hidden="true">▲</div>
+            <p>Kluczowe pytanie dla Polski i CEE: Dlaczego region utknął między fazą 3 a 4? GBD pozwala zidentyfikować, które czynniki ryzyka (palenie, alkohol, dieta, zanieczyszczenie powietrza) hamują przejście do fazy 4 — i co trzeba zmienić, aby ten dystans zmniejszyć.</p>
+          </div>
+        </div>
+
+        <!-- Luka zdrowotna -->
+        <div class="anchor-sub" id="luka">
+          <div class="section-head" style="max-width:none;text-align:center">
+            <h3 style="font-size:1.5rem">Luka zdrowotna: Europa Środkowo-Wschodnia vs Zachodnia</h3>
+            <p class="muted">Dlaczego oczekiwana długość życia w CEE jest o 5–10 lat krótsza niż w Europie Zachodniej?</p>
+          </div>
+          <div class="split-vs">
+            <div class="tone tone-blue gap-col gap-west">
+              <h3>Europa Zachodnia</h3>
+              <div class="gap-item">Oczekiwana dł. życia: 80–84 lat</div>
+              <div class="gap-item">Spadek śmiertelności CVD od lat 70.</div>
+              <div class="gap-item">Skuteczna prewencja pierwotna</div>
+              <div class="gap-item">Faza 4 przejścia epidemiologicznego</div>
+            </div>
+            <div class="vs">vs</div>
+            <div class="tone tone-coral gap-col gap-cee">
+              <h3>Europa Środkowo-Wschodnia</h3>
+              <div class="gap-item">Oczekiwana dł. życia: 73–79 lat</div>
+              <div class="gap-item">Opóźniony spadek śmiertelności CVD</div>
+              <div class="gap-item">Prewencja wtórna, nie pierwotna</div>
+              <div class="gap-item">Między fazą 3 a 4</div>
+            </div>
+          </div>
+
+          <h4 class="center mt-3">Co napędza tę lukę? Czynniki zidentyfikowane przez GBD</h4>
+          <div class="grid" style="gap:14px">
+            <div class="tone tone-coral driver">
+              <h4>Czynniki behawioralne — najsilniejszy wpływ</h4>
+              <div class="pills"><span class="pill">Wysokie spożycie alkoholu</span><span class="pill">Wysoki odsetek palaczy</span><span class="pill">Dieta bogata w sól i tłuszcze nasycone</span><span class="pill">Niska aktywność fizyczna</span></div>
+            </div>
+            <div class="tone tone-purple driver">
+              <h4>Czynniki metaboliczne — konsekwencja stylu życia</h4>
+              <div class="pills"><span class="pill">Wysoka prewalencja nadciśnienia</span><span class="pill">Rosnąca otyłość</span><span class="pill">Wysoka glikemia (niezdiagnozowana cukrzyca)</span></div>
+            </div>
+            <div class="tone tone-sand driver">
+              <h4>Czynniki środowiskowe i systemowe</h4>
+              <div class="pills"><span class="pill">Zanieczyszczenie powietrza (PM2.5)</span><span class="pill">Opóźniony dostęp do nowoczesnych terapii</span><span class="pill">Niższe wydatki na prewencję</span><span class="pill">Nierówności regionalne (miasto vs wieś)</span></div>
+            </div>
+            <div class="tone tone-green center">
+              <h4>Wniosek z danych GBD</h4>
+              <p>Większość luki zdrowotnej CEE wynika z czynników modyfikowalnych — to znaczy takich, na które polityka zdrowotna może wpływać. Dane GBD pozwalają precyzyjnie wskazać, które interwencje przyniosłyby największy zysk zdrowotny w każdym kraju regionu.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4.2 Kluczowe wskaźniki -->
+    <section class="section alt" id="wskazniki">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">4.2</span>
+          <h2>Kluczowe wskaźniki</h2>
+          <p class="muted">Tabele i wykresy porównawcze: ranking krajów CEE według wybranych wskaźników GBD — mapa cieplna, ranking i trendy. Kliknij nagłówek kolumny, aby posortować.</p>
+        </div>
+        <h3>Mapa cieplna wskaźników</h3>
+        <div id="heatmap"></div>
+        <p class="sample-note mt-1">Dane przykładowe — ilustracja działania widżetu. Kolor: niebieski = korzystniej, czerwony = mniej korzystnie (w obrębie kolumny).</p>
+
+        <div class="grid g2 mt-3" style="gap:32px;align-items:start">
+          <div>
+            <div class="panel-title">
+              <h3>Ranking krajów</h3>
+              <div class="field" style="margin:0;min-width:220px">
+                <label for="rank-ind" class="sr-only">Wskaźnik</label>
+                <select id="rank-ind"></select>
+              </div>
+            </div>
+            <div id="ranking"></div>
+            <p class="sample-note">Dane przykładowe. Szary = Europa Zachodnia (punkt odniesienia), koral = Polska.</p>
+          </div>
+          <div>
+            <div class="panel-title">
+              <h3>Trendy 1990–2023</h3>
+              <div class="field" style="margin:0;min-width:220px">
+                <label for="trend-ind" class="sr-only">Wskaźnik</label>
+                <select id="trend-ind"></select>
+              </div>
+            </div>
+            <div class="chips" id="trend-chips" role="group" aria-label="Kraje na wykresie"></div>
+            <div id="trend-chart" class="mt-1"></div>
+            <p class="sample-note">Trend ilustracyjny generowany na potrzeby prototypu.</p>
+          </div>
+        </div>
+        <div class="todo mt-2"><strong>Wybór wskaźników i dane.</strong> Zastąpić dane przykładowe eksportem z GBD Results Tool (val / lower / upper), dodać przedziały niepewności 95% UI w podpowiedziach.</div>
+      </div>
+    </section>
+
+    <!-- 4.3 Porównywarka krajów -->
+    <section class="section" id="porownywarka">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">4.3</span>
+          <h2>Porównywarka krajów</h2>
+          <p class="muted">Wybierz 2–3 kraje i wskaźnik, aby zobaczyć porównanie. Linia przerywana to Europa Zachodnia jako punkt odniesienia.</p>
+        </div>
+        <div class="card">
+          <div class="controls">
+            <div class="field" style="flex:2">
+              <label id="cmp-label">Kraje (maks. 3)</label>
+              <div class="chips" id="cmp-chips" role="group" aria-labelledby="cmp-label"></div>
+            </div>
+            <div class="field">
+              <label for="cmp-ind">Wskaźnik</label>
+              <select id="cmp-ind"></select>
+            </div>
+          </div>
+          <p class="small muted" id="cmp-msg" role="status"></p>
+          <div class="grid g2" style="gap:32px;align-items:start">
+            <div><h4>Wartość w 2023 r.</h4><div id="cmp-bars"></div></div>
+            <div><h4>Trend 1990–2023</h4><div id="cmp-trend"></div></div>
+          </div>
+          <p class="sample-note mt-1">Dane przykładowe — ilustracja działania widżetu.</p>
+        </div>
+        <div class="todo mt-2"><strong>Specyfikacja techniczna i zakres.</strong> Lista wskaźników, grupy wiekowe, płeć, rok bazowy; źródło danych i częstotliwość aktualizacji.</div>
+      </div>
+    </section>
+
+    <!-- 4.4 Data Stories -->
+    <section class="section alt" id="data-stories">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">4.4</span>
+          <h2>Data Stories</h2>
+          <p class="muted">Narracyjne analizy dla regionu CEE — analogicznie do sekcji polskiej: tekst przeplatany wykresami i animacjami, jedna historia oparta na danych.</p>
+        </div>
+        <div class="grid g2">
+          <article class="card teaser">
+            <span class="badge">Wkrótce</span>
+            <h3>CEE 30 lat po transformacji — co mówią dane o zdrowiu?</h3>
+            <p class="muted">Jak zmieniła się oczekiwana długość życia i struktura obciążenia chorobami od 1990 roku w krajach regionu.</p>
+          </article>
+          <article class="card teaser">
+            <span class="badge">Wkrótce</span>
+            <h3>Luka zdrowotna Wschód–Zachód: czy się zmniejsza?</h3>
+            <p class="muted">Dekompozycja różnicy w oczekiwanej długości życia według przyczyn i czynników ryzyka.</p>
+          </article>
+        </div>
+        <div class="todo mt-2"><strong>Tematy, dane, teksty.</strong></div>
+      </div>
+    </section>
+
+    <!-- 4.5 Pobierz materiały -->
+    <section class="section tight" id="materialy">
+      <div class="container">
+        <a class="tone tone-blue" href="publikacje.html?region=cee" style="display:flex;justify-content:space-between;align-items:center;gap:20px;text-decoration:none;flex-wrap:wrap">
+          <div><span class="eyebrow">4.5</span><h3 class="mb-0">Pobierz materiały dotyczące CEE</h3><p class="mb-0">Publikacje, raporty i prezentacje — prefiltrowane na region Europy Środkowo-Wschodniej.</p></div>
+          <span class="btn btn-primary">Przejdź do publikacji →</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/site.js"></script>
+  <script src="assets/js/charts.js"></script>
+  <script src="assets/js/pages/cee.js"></script>
+</body>
+</html>

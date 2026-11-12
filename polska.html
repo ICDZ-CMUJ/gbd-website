@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Polska — GBD Research Hub</title>
+  <meta name="description" content="Obciążenie chorobami w Polsce i województwach: przegląd krajowy, dashboard, porównywarka województw, profile wojewódzkie i Data Stories.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <style>
+    .overview-block { display: grid; grid-template-columns: 1fr 1.1fr; gap: 32px; align-items: start; }
+    .overview-block + .overview-block { margin-top: 48px; padding-top: 40px; border-top: 1px solid var(--line); }
+    @media (max-width: 860px) { .overview-block { grid-template-columns: 1fr; } }
+
+    /* Dashboard */
+    .dash { background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 24px; }
+    .dash .controls .field { min-width: 150px; }
+    .dash-year { display: flex; align-items: center; gap: 10px; }
+    .dash-year output { font-weight: 600; font-variant-numeric: tabular-nums; min-width: 3.2em; }
+    .dash-grid { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: 28px; align-items: start; }
+    @media (max-width: 900px) { .dash-grid { grid-template-columns: 1fr; } }
+    .dash-title { font-size: 1rem; font-weight: 600; margin: 0 0 4px; }
+    .dash-sub { font-size: .85rem; color: var(--ink-3); margin: 0 0 12px; }
+    .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 18px; }
+    .kpis .kpi { padding: 12px 10px; }
+    .kpis .k-value { font-size: 1.5rem; }
+    .kpis .k-note { font-size: .78rem; color: var(--ink-3); }
+    @media (max-width: 620px) { .kpis { grid-template-columns: repeat(2, 1fr); } }
+    .rank-bar { height: 10px; border-radius: 5px; background: var(--sand); overflow: hidden; min-width: 80px; }
+    .rank-bar i { display: block; height: 100%; border-radius: 5px; }
+    table.data tr.is-sel td { background: var(--ncd-tint); font-weight: 600; }
+    table.data tr.is-pl td { background: var(--sand); font-weight: 600; }
+    table.data tbody tr { cursor: pointer; }
+    .diff-up { color: var(--cmnn); } .diff-down { color: var(--ncd); }
+
+    /* Porównywarka */
+    .cmp-msg { font-size: .85rem; color: var(--amber-dark); min-height: 1.3em; margin-top: 6px; }
+
+    /* Profile — one-pager */
+    .voiv-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+    .onepager { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 40px 48px; box-shadow: var(--shadow); max-width: 1000px; margin: 0 auto; }
+    .op-head { display: flex; justify-content: space-between; gap: 20px; border-bottom: 2px solid var(--ncd); padding-bottom: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+    .op-head h3 { font-size: 2rem; font-weight: 500; margin: 0 0 4px; }
+    .op-head p { margin: 0; color: var(--ink-2); }
+    .op-brand { text-align: right; font-size: .95rem; color: var(--ink-3); }
+    .op-brand b { display: block; color: var(--ncd); font-weight: 500; }
+    .op-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+    .op-kpi { border-radius: 12px; padding: 16px 12px; text-align: center; font-size: .88rem; }
+    .op-kpi .v { font-size: 1.9rem; font-weight: 500; line-height: 1.1; margin-bottom: 4px; }
+    .op-kpi .pl { margin-top: 6px; opacity: .85; }
+    .op-h { font-size: .92rem; text-transform: uppercase; letter-spacing: .06em; color: var(--ncd); font-weight: 600; border-bottom: 1px solid var(--line); padding-bottom: 6px; margin: 0 0 10px; }
+    .op-two { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 22px; }
+    .op-list { list-style: none; margin: 0; padding: 0; }
+    .op-list li { display: grid; grid-template-columns: 30px 1fr auto; gap: 10px; align-items: center; padding: 5px 0; }
+    .op-list .n { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-size: .85rem; font-weight: 600; }
+    .op-list .r { font-variant-numeric: tabular-nums; font-size: .92rem; }
+    .op-risks { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 22px; }
+    .op-risk { border-radius: 10px; padding: 10px 6px; text-align: center; font-size: .88rem; }
+    .op-risk b { display: block; font-size: 1.1rem; font-weight: 500; }
+    .op-charts { display: grid; grid-template-columns: 1.3fr 1fr; gap: 20px; }
+    .op-charts .box { border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+    .op-charts .box h5 { margin: 0 0 6px; font-size: .85rem; color: var(--ink-2); font-weight: 600; }
+    .op-foot { margin-top: 18px; font-size: .85rem; color: var(--ink-3); }
+    .op-foot .bar { display: flex; justify-content: space-between; border-top: 1px solid var(--line); padding-top: 10px; margin-top: 10px; flex-wrap: wrap; gap: 8px; }
+    @media (max-width: 760px) {
+      .onepager { padding: 22px 18px; }
+      .op-kpis { grid-template-columns: 1fr 1fr; }
+      .op-two, .op-charts { grid-template-columns: 1fr; }
+      .op-risks { grid-template-columns: 1fr 1fr; }
+      .op-brand { text-align: left; }
+    }
+    @media print {
+      body.print-profile * { visibility: hidden; }
+      body.print-profile #onepager, body.print-profile #onepager * { visibility: visible; }
+      body.print-profile #onepager { position: absolute; left: 0; top: 0; width: 100%; border: 0; box-shadow: none; padding: 0; }
+      body.print-profile .gbd-stripe { display: none; }
+      @page { size: A4; margin: 12mm; }
+    }
+
+    .story-card { display: flex; flex-direction: column; gap: 8px; text-decoration: none; color: inherit; }
+    .story-card .badge { align-self: flex-start; }
+  </style>
+</head>
+<body>
+  <div data-site-header></div>
+
+  <main id="main">
+    <section class="page-hero">
+      <div class="container">
+        <nav class="breadcrumbs" aria-label="Okruszki"><a href="index.html">Start</a> / Polska</nav>
+        <span class="eyebrow">3 · Polska</span>
+        <h1>Obciążenie chorobami w Polsce</h1>
+        <p class="lead">Analizy, interaktywne dashboardy i materiały do pobrania dla decydentów, badaczy, mediów i studentów — dla Polski ogółem i 16 województw.</p>
+        <nav class="toc" aria-label="Spis treści">
+          <a href="#przeglad">Przegląd krajowy</a>
+          <a href="#dashboard">Dashboard</a>
+          <a href="#porownywarka">Porównywarka województw</a>
+          <a href="#profile">Profile wojewódzkie</a>
+          <a href="#data-stories">Data Stories</a>
+          <a href="#materialy">Pobierz materiały</a>
+        </nav>
+      </div>
+    </section>
+
+    <!-- 3.1 Przegląd krajowy -->
+    <section class="section" id="przeglad">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">3.1 · Przegląd krajowy</span>
+          <h2>Sytuacja zdrowotna Polski w danych GBD</h2>
+          <p class="muted">Tekstowa analiza sytuacji zdrowotnej Polski na podstawie najnowszych danych GBD, aktualizowana z każdą nową edycją. Ton: analityczny, ale przystępny dla nieepidemiologów.</p>
+        </div>
+
+        <div class="overview-block" id="zgony">
+          <div class="prose">
+            <span class="eyebrow">3.1.1</span>
+            <h3 class="mt-0">Zgony</h3>
+            <p>Przegląd głównych przyczyn zgonów w Polsce: ranking, trendy od 1990, porównanie z UE/CEE. Kluczowe wykresy i tabele osadzone w tekście.</p>
+            <div class="todo"><strong>Dane liczbowe, wykresy, komentarz analityczny zespołu.</strong></div>
+          </div>
+          <div class="card">
+            <p class="dash-title">Standaryzowana umieralność, Polska 1990–2023</p>
+            <p class="dash-sub">na 100 tys. ludności</p>
+            <div id="ov-deaths"></div>
+            <p class="sample-note mb-0">Dane przykładowe — ilustracja koncepcji, do zastąpienia eksportem z GBD Results Tool.</p>
+          </div>
+        </div>
+
+        <div class="overview-block" id="daly">
+          <div class="prose">
+            <span class="eyebrow">3.1.2</span>
+            <h3 class="mt-0">DALY</h3>
+            <p>Przegląd obciążenia chorobami mierzonego w DALY: główne przyczyny, zmiany w czasie, struktura YLL vs YLD. Uwypuklenie roli chorób przewlekłych i zaburzeń psychicznych.</p>
+            <div class="todo"><strong>Dane liczbowe, wykresy, komentarz analityczny zespołu.</strong></div>
+          </div>
+          <div class="card">
+            <p class="dash-title">Struktura DALY: YLL vs YLD</p>
+            <p class="dash-sub">udział w całkowitym obciążeniu, Polska</p>
+            <div class="legend"><span><i style="background:var(--ncd)"></i>YLL — lata utracone z powodu zgonów</span><span><i style="background:var(--coral)"></i>YLD — lata z niepełnosprawnością</span></div>
+            <div id="ov-daly"></div>
+            <p class="sample-note mt-1 mb-0">Dane przykładowe — proporcje ilustracyjne.</p>
+          </div>
+        </div>
+
+        <div class="overview-block" id="ryzyka">
+          <div class="prose">
+            <span class="eyebrow">3.1.3</span>
+            <h3 class="mt-0">Czynniki ryzyka</h3>
+            <p>Przegląd kluczowych czynników ryzyka w Polsce: ranking, trendy, porównanie z regionem. Podział na czynniki behawioralne, metaboliczne i środowiskowe.</p>
+            <div class="todo"><strong>Dane liczbowe, wykresy, komentarz analityczny zespołu.</strong></div>
+          </div>
+          <div class="card">
+            <p class="dash-title">Czynniki ryzyka wg odsetka przypisywalnych DALY</p>
+            <p class="dash-sub">% wszystkich DALY, Polska</p>
+            <div class="legend"><span><i style="background:var(--coral)"></i>Behawioralne</span><span><i style="background:var(--purple)"></i>Metaboliczne</span><span><i style="background:#9a9483"></i>Środowiskowe</span></div>
+            <div id="ov-risks"></div>
+            <p class="sample-note mb-0">Dane przykładowe — ranking ilustracyjny.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3.2 Dashboard -->
+    <section class="section alt" id="dashboard">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">3.2 · Dashboard</span>
+          <h2>Dashboard: kraj / województwa</h2>
+          <p class="muted">Wybierz poziom, wskaźnik, rok, płeć i grupę wieku. Kliknij województwo na mapie lub w tabeli, aby zobaczyć jego trend na tle Polski.</p>
+        </div>
+
+        <div class="dash">
+          <div class="controls">
+            <div class="field"><label for="d-level">Poziom</label><select id="d-level"></select></div>
+            <div class="field"><label for="d-ind">Wskaźnik</label><select id="d-ind"></select></div>
+            <div class="field"><label for="d-age">Grupa wieku</label>
+              <select id="d-age">
+                <option value="all">Wszystkie (standaryzowane wg wieku)</option>
+                <option value="0-14">0–14 lat</option>
+                <option value="15-49">15–49 lat</option>
+                <option value="50-69">50–69 lat</option>
+                <option value="70+">70+ lat</option>
+              </select></div>
+            <div class="field"><label id="d-sex-l">Płeć</label>
+              <div class="seg" role="group" aria-labelledby="d-sex-l" id="d-sex">
+                <button type="button" data-v="all" aria-pressed="true">Ogółem</button>
+                <button type="button" data-v="f" aria-pressed="false">Kobiety</button>
+                <button type="button" data-v="m" aria-pressed="false">Mężczyźni</button>
+              </div></div>
+            <div class="field" style="flex:1.4"><label for="d-year">Rok</label>
+              <div class="dash-year"><input type="range" id="d-year" min="1990" max="2023" step="1" value="2023"><output id="d-year-o" for="d-year">2023</output></div></div>
+          </div>
+
+          <div class="dash-grid">
+            <div>
+              <p class="dash-title" id="d-map-title">Mapa województw</p>
+              <p class="dash-sub" id="d-map-sub"></p>
+              <div id="d-map"></div>
+            </div>
+            <div>
+              <div class="kpis" id="d-kpis"></div>
+              <p class="dash-title" id="d-trend-title">Trend 1990–2023</p>
+              <p class="dash-sub" id="d-trend-sub"></p>
+              <div id="d-trend"></div>
+            </div>
+          </div>
+
+          <h3 class="mt-3" style="font-size:1.05rem">Ranking województw</h3>
+          <div class="table-wrap" id="d-rank"></div>
+          <p class="sample-note mt-1">Wszystkie wartości w dashboardzie są danymi przykładowymi (ilustracja działania). Podział wg płci i wieku oparty na uproszczonych mnożnikach.</p>
+        </div>
+
+        <div class="todo mt-2"><strong>Specyfikacja techniczna dashboardu, źródło danych, zakres.</strong> Docelowo: eksport z GBD Results Tool (subnarodowe szacunki dla 16 województw, 1990–2023) z wartościami val / lower / upper i przedziałami niepewności 95% UI wyświetlanymi w podpowiedziach.</div>
+      </div>
+    </section>
+
+    <!-- 3.3 Porównywarka województw -->
+    <section class="section" id="porownywarka">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">3.3 · Porównywarka</span>
+          <h2>Porównaj województwa</h2>
+          <p class="muted">Wybierz 2–3 województwa i wskaźnik — zobacz porównanie na tle Polski.</p>
+        </div>
+        <div class="card">
+          <div class="field"><label id="c-voiv-l">Województwa (maks. 3)</label>
+            <div class="chips" id="c-voiv" role="group" aria-labelledby="c-voiv-l"></div>
+            <div class="cmp-msg" id="c-msg" role="status"></div></div>
+          <div class="controls" style="margin-bottom:12px">
+            <div class="field" style="max-width:420px"><label for="c-ind">Wskaźnik</label><select id="c-ind"></select></div>
+          </div>
+          <div class="grid g2" style="gap:32px;align-items:start">
+            <div><p class="dash-title">Wartość w 2023 r.</p><p class="dash-sub" id="c-unit"></p><div id="c-bars"></div></div>
+            <div><p class="dash-title">Trend 1990–2023</p><p class="dash-sub">&nbsp;</p><div id="c-trend"></div></div>
+          </div>
+          <p class="sample-note mt-1 mb-0">Dane przykładowe — ilustracja działania widżetu.</p>
+        </div>
+        <div class="todo mt-2"><strong>Specyfikacja techniczna, zakres wskaźników.</strong></div>
+      </div>
+    </section>
+
+    <!-- 3.4 Profile wojewódzkie -->
+    <section class="section alt" id="profile">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">3.4 · Profile wojewódzkie</span>
+          <h2>One-pagery dla 16 województw</h2>
+          <p class="muted">Jednostronicowe dokumenty — po jednym dla każdego województwa: kluczowe wskaźniki, ranking przyczyn zgonów i DALY, top 5 czynników ryzyka, porównanie z Polską ogółem. Format drukarski: gotowe do użycia przez marszałków, urzędników i media regionalne.</p>
+        </div>
+        <div class="voiv-list chips" id="p-list" role="group" aria-label="Wybierz województwo"></div>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:12px" class="no-print">
+          <button type="button" class="btn btn-primary" id="p-print">Drukuj / zapisz PDF</button>
+        </div>
+        <article class="onepager" id="onepager" aria-live="polite"></article>
+        <div class="todo mt-2"><strong>Szablon graficzny, dane per województwo.</strong> Wartości w profilu są przykładowe; nazwy przyczyn i czynników ryzyka — do zastąpienia rzeczywistym rankingiem z GBD.</div>
+      </div>
+    </section>
+
+    <!-- 3.5 Data Stories -->
+    <section class="section" id="data-stories">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">3.5 · Data Stories</span>
+          <h2>Historie opowiedziane danymi</h2>
+          <p class="muted">Krótkie narracyjne analizy w formacie scrollytelling: tekst przeplatany wykresami i animacjami. Każda opowiada jedną historię opartą na danych. Format angażujący, łatwy do udostępniania, idealny do mediów i dydaktyki.</p>
+        </div>
+
+        <div class="grid g3 mb-2">
+          <div class="card story-card"><span class="badge">Wkrótce</span><h3>Jak zmieniło się obciążenie chorobami w Polsce od 1990?</h3><p class="muted">Trzy dekady transformacji w danych GBD.</p></div>
+          <div class="card story-card"><span class="badge">Wkrótce</span><h3>Dlaczego Polacy żyją krócej niż Europejczycy z Zachodu?</h3><p class="muted">Dekompozycja luki w oczekiwanej długości życia.</p></div>
+          <div class="card story-card"><span class="badge">Wkrótce</span><h3>Alkohol w Polsce — ile nas kosztuje?</h3><p class="muted">Obciążenie przypisywalne spożyciu alkoholu.</p></div>
+        </div>
+        <div class="todo mb-2"><strong>Tematy pierwszych 2–3 Data Stories, dane, teksty.</strong></div>
+
+        <article class="mt-3" id="story-1">
+          <span class="eyebrow">Data Story 1</span>
+          <h2>Dlaczego GBD uzupełnia dane tradycyjnej statystyki?</h2>
+          <p class="lead">Siedem różnic, które zmieniają obraz zdrowia Polski.</p>
+
+          <div class="compare mt-2" role="table" aria-label="Porównanie tradycyjnej statystyki zdrowotnej i Global Burden of Disease">
+            <div class="compare-head" role="row"><div role="columnheader">Tradycyjna statystyka zdrowotna</div><div role="columnheader">Global Burden of Disease</div></div>
+
+            <div class="compare-cat">Co mierzy?</div>
+            <div class="compare-row" role="row">
+              <div role="cell">Głównie zgony i ich przyczyny. Częściowo — zachorowalność na wybrane choroby (rejestry nowotworów, choroby zakaźne).</div>
+              <div role="cell">Zgony + niepełnosprawność + czynniki ryzyka — w jednej zintegrowanej ramie. DALY łączy umieralność i jakość życia.</div>
+            </div>
+
+            <div class="compare-cat">Dane o zgonach</div>
+            <div class="compare-row" role="row">
+              <div role="cell">W Polsce rejestracja zgonów jest niemal kompletna — ponad 99% zgonów ma wskazaną przyczynę. Jednak jakość kodowania jest niezadowalająca: znaczna część kart zgonów wskazuje przyczyny niebędące bezpośrednimi przyczynami zgonu (np. „niewydolność serca", „miażdżyca" bez dalszej specyfikacji). WHO szacuje, że w Polsce ok. 30% przyczyn zgonów to tzw. garbage codes — kody nieużyteczne analitycznie.</div>
+              <div role="cell">GBD systematycznie modeluje i koryguje garbage codes, redystrybuując je do właściwych przyczyn zgonów za pomocą algorytmów opartych na danych klinicznych i epidemiologicznych. Dzięki temu szacunki GBD dotyczące przyczyn umieralności są analitycznie użyteczne — nawet tam, gdzie oryginalne dane są niskiej jakości.</div>
+            </div>
+
+            <div class="compare-cat">Porównywalność</div>
+            <div class="compare-row" role="row">
+              <div role="cell">Różne definicje, klasyfikacje i metody zbierania danych w różnych krajach. Porównania są utrudnione lub niemożliwe.</div>
+              <div role="cell">Ujednolicona metodologia dla 204 krajów. Standaryzacja wiekowa, korekta niekompletności, te same definicje.</div>
+            </div>
+
+            <div class="compare-cat">Choroby, które nie kończą się zgonem</div>
+            <div class="compare-row" role="row">
+              <div role="cell">Ból kręgosłupa, depresja, lęk, migrena — praktycznie niewidoczne w tradycyjnych statystykach, gdyż nie kończą się zgonem.</div>
+              <div role="cell">YLD uwidacznia ogromne obciążenie chorobami przewlekłymi i zaburzeniami psychicznymi. Ból kręgosłupa to #4 przyczyna DALY w Polsce.</div>
+            </div>
+
+            <div class="compare-cat">Czynniki ryzyka</div>
+            <div class="compare-row" role="row">
+              <div role="cell">Odrębne badania (np. GATS dla tytoniu, EHIS dla diety). Brak systematycznego łączenia z obciążeniem chorobami.</div>
+              <div role="cell">88 czynników ryzyka przypisanych do konkretnych chorób z ilościowym szacunkiem: „ile DALY powoduje palenie w Polsce".</div>
+            </div>
+
+            <div class="compare-cat">Niepewność</div>
+            <div class="compare-row" role="row">
+              <div role="cell">Dane prezentowane jako fakty. Brak informacji o jakości danych źródłowych i stopniu pewności.</div>
+              <div role="cell">Każdy szacunek z 95% przedziałem niepewności. Użytkownik wie, jak pewny jest wynik.</div>
+            </div>
+
+            <div class="compare-cat">Trendy w czasie</div>
+            <div class="compare-row" role="row">
+              <div role="cell">Często zmiana metodologii między latami uniemożliwia porównania. Przerwy w seriach danych.</div>
+              <div role="cell">Spójna seria od 1990 do dziś. Retrospektywne korekty — każda nowa edycja przelicza całą historię tą samą metodą.</div>
+            </div>
+          </div>
+
+          <div class="tone tone-amber mt-2">
+            <h4>Kluczowy wniosek</h4>
+            <p>GBD nie zastępuje krajowej statystyki zdrowotnej — korzysta z niej jako źródła danych. Ale nakłada na nią ujednoliconą ramę analityczną, która umożliwia porównania między krajami, chorobami i latami, oraz ujawnia obciążenie chorobami, które tradycyjna statystyka pomija.</p>
+          </div>
+          <p class="mt-1"><a href="nauczanie.html#garbage-codes">Więcej: jak działa redystrybucja garbage codes →</a></p>
+        </article>
+
+        <div class="todo mt-3"><strong>Pomysł na przyszłość: interaktywna „Mapa podróży po Polsce".</strong> W miarę przejeżdżania pomiędzy województwami zmieniają się parametry zdrowotne.</div>
+      </div>
+    </section>
+
+    <!-- 3.6 Pobierz materiały -->
+    <section class="section tight alt" id="materialy">
+      <div class="container">
+        <a class="tone tone-coral" href="publikacje.html?region=pl" style="display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;text-decoration:none">
+          <div><span class="eyebrow" style="color:var(--coral-dark)">3.6 · Pobierz materiały</span><h3 class="mb-0">Publikacje, raporty i prezentacje dotyczące Polski</h3></div>
+          <span class="btn btn-coral">Przejdź do publikacji →</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/site.js"></script>
+  <script src="assets/js/charts.js"></script>
+  <script src="assets/js/pages/polska.js"></script>
+</body>
+</html>
